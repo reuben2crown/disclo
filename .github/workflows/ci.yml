@@ -1,10 +1,11 @@
 name: CI
 
+# Primary development: push to `dev`. Release path: PR `dev` → `main` runs the same checks (no staging server; validate locally before opening PR).
 on:
   push:
     branches: [dev]
   pull_request:
-    branches: [dev]
+    branches: [dev, main]
 
 defaults:
   run:

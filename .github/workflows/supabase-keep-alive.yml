@@ -1,6 +1,9 @@
 # Twice-weekly lightweight `SELECT 1` against Supabase Postgres to reduce risk of free-tier
 # project pause due to inactivity. Configure repo secret SUPABASE_DATABASE_URL (Supabase
-# connection string, same DB as production / staging as appropriate).
+# connection string for the DB you want kept warm).
+#
+# GitHub runs scheduled workflows from the repository default branch only. If `main` is
+# minimal (README-only), keep default branch `dev` until release, or duplicate this file on `main`.
 name: supabase-keep-alive
 
 on:

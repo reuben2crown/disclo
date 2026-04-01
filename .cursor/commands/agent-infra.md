@@ -25,7 +25,7 @@ Use tooling, not assumptions:
 
 | Target | How to verify |
 | --- | --- |
-| **GitHub Actions** | `gh run list --workflow=ci.yml --branch main` (or web UI); latest run **success** on `main` |
+| **GitHub Actions** | `gh run list --workflow=ci.yml --branch dev` (or web UI); PR **`dev` → `main`** must show green checks |
 | **Railway** | Railway CLI or dashboard: deploy succeeded, service health, env vars present (no values in chat) |
 | **Supabase / Postgres** | `pnpm --filter @disclo/db exec prisma migrate deploy` against the **intended** URL; or Supabase MCP / SQL ping |
 | **Redis / BullMQ** | Smoke: worker or script connects with `REDIS_URL`, enqueue + consume a test job (evidence in PR or SESSION) |
@@ -40,7 +40,7 @@ Align with the Phase 1 sprints plan **Maintainer policy**:
 - **INFRA-02 / INFRA-10:** Real migrate path + seed if required against target Postgres
 - **INFRA-07:** Redis reachable; BullMQ smoke (not just `queues.ts` names)
 - **INFRA-09:** Railway (or chosen host) deploy green and health checks pass
-- **INFRA-08:** CI green on **`main`** for the pipeline the team relies on
+- **INFRA-08:** CI green on **push to `dev`** and on **PRs to `main`** (same workflow; no staging server)
 - **INFRA-11:** Keep-alive workflow succeeded at least once with secrets wired
 
 ## SEC-06 (dependency audit) policy

@@ -8,8 +8,8 @@ Disclo is a compliance SaaS for AI-content disclosures and green-claims substant
 - Monorepo root: `c:/Dev/disclo-apps/disclo`
 
 ## Git branches
-- **`dev`** — Default branch for daily work; GitHub Actions CI targets `dev`. Open PRs into `dev` for features.
-- **`main`** — Stays minimal until a production release. **Only** merge into `main` via pull request whose **source branch is `dev`** (enforced by `.github/workflows/main-pr-source-dev.yml` on `dev`). Set the GitHub repo **default branch** to `dev` and protect `main` (require PR, block direct push).
+- **`dev`** — Default branch for daily work. CI runs on **every push to `dev`** and on **PRs to `main`** (release path). No separate staging server; run `pnpm lint`, `typecheck`, `test`, `build` from `disclo/` locally before push.
+- **`main`** — Stays minimal until a production release. **Only** merge into `main` via pull request whose **source branch is `dev`** (see `.github/workflows/main-pr-source-dev.yml`). Set the GitHub repo **default branch** to `dev` so scheduled workflows (e.g. Supabase keep-alive) use the branch that contains `.github/workflows/`. Protect `main` (require PR + CI when ready).
 
 ## Key Directories
 - `disclo/apps/embedded/shopify` Shopify embedded app

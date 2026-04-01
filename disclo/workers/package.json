@@ -14,7 +14,8 @@
     "start:claims": "node dist/claims-checker.js",
     "start:report": "node dist/report-generator.js",
     "start:evidence": "node dist/evidence-verifier.js",
-    "start:auto-scan": "node dist/auto-scan.js"
+    "start:auto-scan": "node dist/auto-scan.js",
+    "smoke:bullmq": "tsx bullmq-smoke.ts"
   },
   "dependencies": {
     "@disclo/core": "workspace:*",

@@ -15,7 +15,7 @@
     "db:migrate:deploy": "pnpm exec dotenv -e .env -- pnpm --filter @disclo/db run migrate:deploy",
     "db:seed": "pnpm exec dotenv -e .env -- pnpm --filter @disclo/db run db:seed",
     "db:studio": "pnpm exec dotenv -e .env -- pnpm --filter @disclo/db run studio",
-    "smoke:bullmq": "pnpm exec dotenv -e .env -- pnpm --filter @disclo/workers exec -- tsx bullmq-smoke.ts"
+    "smoke:bullmq": "pnpm exec dotenv -e .env -- pnpm --filter @disclo/workers run smoke:bullmq"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",

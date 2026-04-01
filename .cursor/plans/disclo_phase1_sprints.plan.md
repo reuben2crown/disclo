@@ -12,7 +12,7 @@ todos:
     content: "Sprint 0 (sec 4.7): QA traceability matrix shell at docs/QA_TRACEABILITY.md"
     status: completed
   - id: s0-local-ci-pnpm
-    content: "Sprint 0 (sec 4.7): CI green — pnpm typecheck, lint, test from disclo/ (confirm GitHub Actions on main after push)"
+    content: "Sprint 0 (sec 4.7): CI green — pnpm typecheck, lint, test from disclo/ (GitHub: push to dev + PR to main)"
     status: completed
   - id: s0-threat-ingress-audit
     content: "Sprint 0: Threat model ingress map audited vs current Shopify + webhook routes (/agent-sec-comp)"
@@ -24,7 +24,7 @@ todos:
     content: "Sprint 0: QA_TRACEABILITY.md non-placeholder rows for first three Phase 1 E2E paths (/agent-qa)"
     status: completed
   - id: s0-ci-github-main
-    content: "Sprint 0: CI green on dev in GitHub Actions (default branch; /agent-infra)"
+    content: "Sprint 0: CI green in GitHub Actions — push to dev + PRs to main (/agent-infra)"
     status: pending
   - id: s0-webhook-contract-tests
     content: "Sprint 0: Webhook test harness / contract tests (e.g. Linear REU-157) (/agent-backend + /agent-sec-comp)"
@@ -60,7 +60,7 @@ todos:
     content: "INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base"
     status: pending
   - id: w1-infra-08
-    content: "INFRA-08: GitHub Actions CI — lint, typecheck, test on PR"
+    content: "INFRA-08: GitHub Actions CI — lint, typecheck, test, build on push to dev + PR to main"
     status: completed
   - id: w1-infra-09
     content: "INFRA-09: Railway deployment config"
@@ -308,7 +308,7 @@ isProject: false
 ## Maintainer policy (required)
 
 - **Valid YAML `status` values:** only `pending` and `completed`. Cursor Plan checkboxes read from these; do not write other values into frontmatter.
-- **INFRA done criteria (strict):** Mark each `w1-infra-*` todo **completed** only when the **integration** matches the execution plan, not when files exist on disk. Minimum bar: **INFRA-02/10** — `prisma migrate deploy` (or equivalent) against the **intended** Supabase/Postgres URL and seed if required; **INFRA-07** — Redis/BullMQ reachable and a worker can consume a test job (or documented smoke with evidence); **INFRA-09** — Railway (or chosen host) **deploy succeeds** and health checks pass; **INFRA-08** — CI green on `**main`** for the real pipeline you rely on; **INFRA-11** — keep-alive workflow **succeeded** at least once with `SUPABASE_DATABASE_URL` set. **INFRA-01/03/04/05/06** follow the same rule: complete only when you would sign the Linear issue off (wired, not stub-only).
+- **INFRA done criteria (strict):** Mark each `w1-infra-*` todo **completed** only when the **integration** matches the execution plan, not when files exist on disk. Minimum bar: **INFRA-02/10** — `prisma migrate deploy` (or equivalent) against the **intended** Supabase/Postgres URL and seed if required; **INFRA-07** — Redis/BullMQ reachable and a worker can consume a test job (or documented smoke with evidence); **INFRA-09** — Railway (or chosen host) **deploy succeeds** and health checks pass when you cut a release (no separate staging host; validate locally first); **INFRA-08** — CI green on **push to `dev`** and on **PRs targeting `main`** (release path from `dev`); **INFRA-11** — keep-alive workflow **succeeded** at least once with `SUPABASE_DATABASE_URL` set (scheduled runs use the **default branch**; that branch must contain `supabase-keep-alive.yml`). **INFRA-01/03/04/05/06** follow the same rule: complete only when you would sign the Linear issue off (wired, not stub-only).
 - When work is **done** (Linear AC met, merged): set the matching YAML todo to `status: completed` **and** update the body line to `- [x] ~~same visible text as before~~ (`id`)`.
 - **In progress:** track in Linear; keep YAML at `pending` until done.
 - **Humans** may fix mismatches between Plan todos and body; they do not need to tick items routinely.
@@ -327,7 +327,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 | Threat model + **ingress audit** (`s0-threat-ingress-audit`)        | `/agent-sec-comp`                    | Grep `app/routes`, `shopify.app.toml`, `apps/api` vs `docs/security/threat-model.md` ingress map |
 | **Secrets runbook** ↔ `infra/env.example` (`s0-secrets-env-parity`) | `/agent-sec-comp`                    | Table lists every `env.example` key + CI-only secrets (e.g. keep-alive)                          |
 | **QA traceability** first E2E rows (`s0-qa-matrix-rows`)            | `/agent-qa`                          | Rows have real requirement text, planned test paths, not `*TBD*` for those rows                  |
-| **CI on `main`** (`s0-ci-github-main`)                              | `/agent-infra`                       | `gh run list` or Actions UI: green on `main` after merge                                         |
+| **CI on `dev` + PR to `main`** (`s0-ci-github-main`)                | `/agent-infra`                       | `gh run list --workflow=ci.yml --branch dev`; green on PRs to `main` from `dev`                  |
 | **Webhook contract tests** (`s0-webhook-contract-tests`)            | `/agent-backend` + `/agent-sec-comp` | Unit/integration tests for HMAC contract; optional Remix route tests later                       |
 | **SEC-06** dependency audit (`s0-ci-sec06`)                         | `/agent-infra`                       | Workflow job + policy in `agent-infra.md` (critical gate; high tracked)                          |
 | **Incident response** doc (`s0-incident-response-doc`)              | `/agent-sec-comp`                    | File exists; linked from `docs/SESSION.md`                                                       |
@@ -340,7 +340,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 
 ## Sprint 0 validation snapshot (2026-03-31)
 
-**Sprint 0 is not fully “closed”** until `**s0-ci-github-main`** is green on GitHub `**main`** and `**s0-linear-sec-comp`** matches Linear reality. Other doc and code gates below are landed in-repo.
+**Sprint 0 is not fully “closed”** until `**s0-ci-github-main`** is green on GitHub (`**dev`** pushes and/or **PR `dev` → `main`**) and `**s0-linear-sec-comp`** matches Linear reality. Other doc and code gates below are landed in-repo.
 
 
 | Criterion                                | Status                                                                                       |
@@ -369,7 +369,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 - ~~Sprint 0: Threat model ingress map audited vs current Shopify + webhook routes~~ (`s0-threat-ingress-audit` / `/agent-sec-comp`)
 - ~~Sprint 0: Secrets runbook covers every disclo/infra/env.example entry~~ (`s0-secrets-env-parity`)
 - ~~Sprint 0: QA_TRACEABILITY.md non-placeholder rows for first three Phase 1 E2E paths~~ (`s0-qa-matrix-rows` / `/agent-qa`)
-- Sprint 0: Same CI green on main in GitHub Actions (`s0-ci-github-main` / `/agent-infra`)
+- Sprint 0: CI green on GitHub — `dev` push + PRs to `main` (`s0-ci-github-main` / `/agent-infra`)
 - ~~Sprint 0: Webhook test harness / contract tests (e.g. Linear REU-157)~~ (`s0-webhook-contract-tests`)
 - ~~Sprint 0: CI dependency audit and/or secret scanning + policy (SEC-06)~~ (`s0-ci-sec06`)
 - ~~Sprint 0: docs/security/incident-response.md + link from SESSION (SEC-07)~~ (`s0-incident-response-doc`)

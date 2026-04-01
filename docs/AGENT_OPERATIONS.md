@@ -53,8 +53,8 @@ This matches **Phase 8** and the **agent roster** in `.cursor/plans/disclo_autho
 
 ## Git branches
 
-- **`dev`** — Default for implementation; CI (`push` / `pull_request`) targets `dev`.
-- **`main`** — Minimal until production release; merges only via PR from **`dev`** (see `.github/workflows/main-pr-source-dev.yml`). Details: `docs/GITHUB_BRANCHES.md`, `CLAUDE.md`.
+- **`dev`** — Default for implementation; CI on **every push**; also runs on **PRs to `main`** (release path). No staging server — run `pnpm lint` / `typecheck` / `test` / `build` from `disclo/` locally before push.
+- **`main`** — Minimal until production release; merges only via PR from **`dev`**. Production deploy (e.g. Railway) should track **`main`** when you promote. Details: `docs/GITHUB_BRANCHES.md`, `CLAUDE.md`.
 
 ## Sprint 0 task routing (agents)
 
@@ -71,7 +71,7 @@ Full table (validate-before-create, CLI/MCP proof where noted): **`.cursor/plans
 
 - **`.cursor/plans/disclo_phase1_sprints.plan.md`** lists **one YAML todo per checklist row**; that is what fills the Cursor Plan **To-dos** panel (markdown task lists alone are not enough). Todos must stay **nested** under `todos:` with `  - id:` / `    content:` / `    status:` — if Cursor prepends a stub block (`name: ""`, `todos: []`) or flattens the list, fix the file or the panel stays empty and the ids can render as plain text above the title in preview.
 - When a row is **done** (Linear AC met, merged): set **`status: completed`** on the matching YAML `id` **and** update the body line to `- [x] ~~task text~~ (`id`)`.
-- **INFRA-*** issues: do **not** mark complete for “we added files.” Use the sprint plan **Maintainer policy → INFRA done criteria** (real DB migrate path, Redis/BullMQ proof, Railway deploy green, CI on `main`, keep-alive run succeeded, etc.).
+- **INFRA-*** issues: do **not** mark complete for “we added files.” Use the sprint plan **Maintainer policy → INFRA done criteria** (real DB migrate path, Redis/BullMQ proof, Railway deploy green, CI on **`dev` + PRs to `main`**, keep-alive run succeeded, etc.).
 - Set the **Linear** issue **Done** in the same delivery window.
 - Humans should not be expected to maintain todos; they may fix mistakes if Plan, body, and Linear disagree.
 
