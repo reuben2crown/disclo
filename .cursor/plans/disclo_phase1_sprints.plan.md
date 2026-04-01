@@ -333,14 +333,14 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 | **Incident response** doc (`s0-incident-response-doc`)              | `/agent-sec-comp`                    | File exists; linked from `docs/SESSION.md`                                                       |
 | **Linear SEC/COMP** (`s0-linear-sec-comp`)                          | `/agent-sec-comp`                    | Linear MCP or UI; issues match AC, not scaffold-only                                             |
 | **INFRA-01–11** (Week 1 block)                                      | `/agent-infra`                       | Maintainer policy integration bar; Railway/Supabase/Redis/CLI proof                              |
-| **BE-01 / BE-02** (Sprint 0 infra + core section)                    | `/agent-backend`                     | Types in `types.ts`; `regulations/` + `resolve.test.ts`; no duplicate registry                   |
+| **BE-01 / BE-02** (Sprint 0 infra + core section)                   | `/agent-backend`                     | Types in `types.ts`; `regulations/` + `resolve.test.ts`; no duplicate registry                   |
 
 
 ---
 
 ## Sprint 0 validation snapshot (2026-03-31)
 
-**Sprint 0 is not fully “closed”** until `**s0-ci-github-main`** is green on GitHub `**main**` and `**s0-linear-sec-comp**` matches Linear reality. Other doc and code gates below are landed in-repo.
+**Sprint 0 is not fully “closed”** until `**s0-ci-github-main`** is green on GitHub `**main`** and `**s0-linear-sec-comp**` matches Linear reality. Other doc and code gates below are landed in-repo.
 
 
 | Criterion                                | Status                                                                                       |
@@ -385,22 +385,22 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 
 **All INFRA rows reset to pending (2026-03-31):** Earlier checks treated “files in repo” as done. They are **not** complete until integrations match Maintainer policy (real DB migrate path, Redis/BullMQ smoke, Railway deploy green, CI on `main`, etc.).
 
-- [x] ~~INFRA-01: Monorepo scaffold — pnpm workspaces, Turborepo pipelines, shared tsconfig, ESLint, Prettier, Vitest workspace~~ (`w1-infra-01`)
+- ~~INFRA-01: Monorepo scaffold — pnpm workspaces, Turborepo pipelines, shared tsconfig, ESLint, Prettier, Vitest workspace~~ (`w1-infra-01`)
 - INFRA-02: Complete Prisma schema (ALL 17 tables) + initial migration + seed (5 plans, 6 cert registries) (`w1-infra-02`) — **code + migration on disk; prove `pnpm db:migrate:deploy` against reachable Supabase (pooler URL)**
-- [x] ~~INFRA-03: Core config — config.ts with Zod validation for all env vars (GPTZero, Hive, Claude, Shopify, Resend, R2, Redis, DB)~~ (`w1-infra-03`)
-- [x] ~~INFRA-04: Shared error classes — errors.ts (ClassifierError, AdapterError, PlanError, ValidationError, BillingError, EvidenceError)~~ (`w1-infra-04`)
-- [x] ~~INFRA-05: Structured logger — logger.ts with Pino, JSON output, correlation IDs~~ (`w1-infra-05`)
-- [x] ~~INFRA-06: Crypto utilities — crypto.ts AES-256-GCM encrypt/decrypt~~ (`w1-infra-06`)
+- ~~INFRA-03: Core config — config.ts with Zod validation for all env vars (GPTZero, Hive, Claude, Shopify, Resend, R2, Redis, DB)~~ (`w1-infra-03`)
+- ~~INFRA-04: Shared error classes — errors.ts (ClassifierError, AdapterError, PlanError, ValidationError, BillingError, EvidenceError)~~ (`w1-infra-04`)
+- ~~INFRA-05: Structured logger — logger.ts with Pino, JSON output, correlation IDs~~ (`w1-infra-05`)
+- ~~INFRA-06: Crypto utilities — crypto.ts AES-256-GCM encrypt/decrypt~~ (`w1-infra-06`)
 - INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base (`w1-infra-07`) — **queues wired; prove `pnpm smoke:bullmq` with real `REDIS_URL`**
-- [x] ~~INFRA-08: GitHub Actions CI — lint, typecheck, test on PR~~ (`w1-infra-08`)
+- ~~INFRA-08: GitHub Actions CI — lint, typecheck, test on PR~~ (`w1-infra-08`)
 - INFRA-09: Railway deployment config (`w1-infra-09`)
 - INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI (`w1-infra-10`)
 - INFRA-11: GitHub Actions keep-alive workflow (supabase-keep-alive.yml) — twice-weekly SELECT 1, secrets wired, failure visibility, runbook to disable on Supabase Pro upgrade (`w1-infra-11`)
 
 ### Core (Linear epic BE / REU-29)
 
-- [x] ~~BE-01: Core types — ScanRequest, LabelInstruction, PlatformAdapter, RegulationConfig, EvidenceType, QualityTier~~ (`w1-be-01`)
-- [x] ~~BE-02: Regulation registry — packages/core/src/regulations/ — all 5 regulation configs, applicability resolver based on target_markets~~ (`w1-be-02`)
+- ~~BE-01: Core types — ScanRequest, LabelInstruction, PlatformAdapter, RegulationConfig, EvidenceType, QualityTier~~ (`w1-be-01`)
+- ~~BE-02: Regulation registry — packages/core/src/regulations/ — all 5 regulation configs, applicability resolver based on target_markets~~ (`w1-be-02`)
 
 ---
 
