@@ -44,7 +44,7 @@ Active phase: Phase 1 execution
 
 ## Next steps
 
-1. **Push branches:** `git remote set-url origin https://github.com/reuben2crown/disclo-apps.git` (if needed), `git push -u origin main`, `git push -u origin dev`, then `gh repo edit reuben2crown/disclo-apps --default-branch dev`. Confirm CI on **`dev`** (`s0-ci-github-main` equivalent).
+1. **Push branches:** `git remote set-url origin https://github.com/reuben2crown/disclo-apps.git` (if needed), `git push -u origin main`, `git push -u origin dev`, then `gh repo edit reuben2crown/disclo-apps --default-branch dev`. **`main`** is one root `README.md` only; full tree is on **`dev`**. If `main` was pushed before this layout, use `git push --force-with-lease origin main` once. Confirm CI on **`dev`**.
 2. **Protect `main`:** GitHub branch protection + optional `docs/GITHUB_BRANCHES.md` CLI notes.
 3. **Supabase:** pooler `DATABASE_URL`, then `pnpm db:migrate:deploy` / `db:seed` from `disclo/`.
 4. **Redis:** `REDIS_URL` set → `pnpm smoke:bullmq` (keys under `disclo_:` prefix).
