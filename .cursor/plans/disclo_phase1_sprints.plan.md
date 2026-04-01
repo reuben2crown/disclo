@@ -58,7 +58,7 @@ todos:
     status: completed
   - id: w1-infra-07
     content: "INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base"
-    status: pending
+    status: completed
   - id: w1-infra-08
     content: "INFRA-08: GitHub Actions CI — lint, typecheck, test, build on push to dev + PR to main"
     status: completed
@@ -354,7 +354,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 | `docs/security/incident-response.md`     | Done — linked from `docs/SESSION.md`                                                         |
 
 
-**Ready for Sprint 1 / Week 1?** **Yes** for core types + regulation registry + **Supabase migrate + seed**. **Still open for strict Maintainer bar:** `w1-infra-07` (set `REDIS_URL` `rediss://…` from Upstash for `pnpm smoke:bullmq`), `w1-infra-09` / `w1-infra-11` (Railway when you release, keep-alive with secret). **Sprint 0 foundations:** push `dev`, confirm Actions; **PR `dev` → `main`** for release gate; Linear: SEC/COMP as before.
+**Ready for Sprint 1 / Week 1?** **Yes** for core types + regulation registry + **Supabase migrate + seed** + **BullMQ smoke**. **Still open for strict Maintainer bar:** `w1-infra-09` / `w1-infra-11` (Railway when you release, keep-alive with secret). **Sprint 0 foundations:** push `dev`, confirm Actions; **PR `dev` → `main`** for release gate; Linear: SEC/COMP as before.
 
 ---
 
@@ -391,7 +391,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 - ~~INFRA-04: Shared error classes — errors.ts (ClassifierError, AdapterError, PlanError, ValidationError, BillingError, EvidenceError)~~ (`w1-infra-04`)
 - ~~INFRA-05: Structured logger — logger.ts with Pino, JSON output, correlation IDs~~ (`w1-infra-05`)
 - ~~INFRA-06: Crypto utilities — crypto.ts AES-256-GCM encrypt/decrypt~~ (`w1-infra-06`)
-- INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base (`w1-infra-07`) — **queues wired; prove `pnpm smoke:bullmq` with real `REDIS_URL`**
+- [x] ~~INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base~~ (`w1-infra-07`) — **`pnpm smoke:bullmq` OK** (shared Redis; prefix `disclo_`)
 - ~~INFRA-08: GitHub Actions CI — lint, typecheck, test on PR~~ (`w1-infra-08`)
 - INFRA-09: Railway deployment config (`w1-infra-09`)
 - [x] ~~INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI~~ (`w1-infra-10`) — **2026-04-01:** `schema.prisma` `directUrl` + `infra/env.example`; migrate/seed proven locally
