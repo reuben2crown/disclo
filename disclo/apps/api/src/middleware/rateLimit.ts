@@ -1,3 +1,4 @@
+import { getBullmqQueueOptions } from "@disclo/core";
 import { Queue } from "bullmq";
 
 export async function applyRateLimit(_key: string): Promise<void> {
@@ -8,6 +9,6 @@ export async function enforceQuota(_key: string): Promise<void> {
   // Placeholder middleware hook for monthly quota enforcement.
 }
 
-export function createNotificationQueue(connection: { url: string }) {
-  return new Queue("notification-queue", { connection });
+export function createNotificationQueue(redisUrl: string) {
+  return new Queue("notification-queue", getBullmqQueueOptions(redisUrl));
 }

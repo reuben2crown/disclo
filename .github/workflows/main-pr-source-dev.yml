@@ -1,0 +1,20 @@
+# Enforces: pull requests targeting `main` must have head branch `dev` only.
+# (Convention + automation until GitHub rulesets add stricter branch filters.)
+name: Main — PR source must be dev
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  enforce-dev-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject if source branch is not dev
+        if: github.head_ref != 'dev'
+        run: |
+          echo "::error::Only pull requests from branch 'dev' may target 'main'. Current head: ${{ github.head_ref }}"
+          exit 1
+      - name: Source is dev
+        if: github.head_ref == 'dev'
+        run: echo "OK — pull request is from dev."

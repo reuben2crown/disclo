@@ -24,7 +24,7 @@ todos:
     content: "Sprint 0: QA_TRACEABILITY.md non-placeholder rows for first three Phase 1 E2E paths (/agent-qa)"
     status: completed
   - id: s0-ci-github-main
-    content: "Sprint 0: Same CI green on main in GitHub Actions (/agent-infra)"
+    content: "Sprint 0: CI green on dev in GitHub Actions (default branch; /agent-infra)"
     status: pending
   - id: s0-webhook-contract-tests
     content: "Sprint 0: Webhook test harness / contract tests (e.g. Linear REU-157) (/agent-backend + /agent-sec-comp)"
@@ -340,7 +340,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 
 ## Sprint 0 validation snapshot (2026-03-31)
 
-**Sprint 0 is not fully “closed”** until `**s0-ci-github-main`** is green on GitHub `**main`** and `**s0-linear-sec-comp**` matches Linear reality. Other doc and code gates below are landed in-repo.
+**Sprint 0 is not fully “closed”** until `**s0-ci-github-main`** is green on GitHub `**main`** and `**s0-linear-sec-comp`** matches Linear reality. Other doc and code gates below are landed in-repo.
 
 
 | Criterion                                | Status                                                                                       |

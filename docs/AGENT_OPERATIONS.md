@@ -51,13 +51,18 @@ This matches **Phase 8** and the **agent roster** in `.cursor/plans/disclo_autho
 - QA matrix: `docs/QA_TRACEABILITY.md`  
 - Phase 1 sprint checklist (Cursor plan): `.cursor/plans/disclo_phase1_sprints.plan.md` (stub link: `docs/SPRINT_PLANS.md`)
 
+## Git branches
+
+- **`dev`** — Default for implementation; CI (`push` / `pull_request`) targets `dev`.
+- **`main`** — Minimal until production release; merges only via PR from **`dev`** (see `.github/workflows/main-pr-source-dev.yml`). Details: `docs/GITHUB_BRANCHES.md`, `CLAUDE.md`.
+
 ## Sprint 0 task routing (agents)
 
 Full table (validate-before-create, CLI/MCP proof where noted): **`.cursor/plans/disclo_phase1_sprints.plan.md` → section “Sprint 0 — agent routing.”** Short map:
 
 | Area | Command |
 | --- | --- |
-| CI on `main`, SEC-06 audit job, Railway/Supabase/Redis/keep-alive, INFRA-01–11 | `/agent-infra` |
+| CI on `dev`, SEC-06 audit job, Railway/Supabase/Redis/keep-alive, INFRA-01–11 | `/agent-infra` |
 | Threat ingress, secrets parity, incident doc, Linear SEC/COMP | `/agent-sec-comp` |
 | QA traceability rows (first E2E paths) | `/agent-qa` |
 | Webhook contract + workers (with sec-comp) | `/agent-backend` |  

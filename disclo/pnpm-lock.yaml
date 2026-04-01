@@ -32,6 +32,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@disclo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       bullmq:
         specifier: ^5.58.5
         version: 5.71.0

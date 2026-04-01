@@ -52,6 +52,7 @@ Align with the Phase 1 sprints plan **Maintainer policy**:
 
 - `pnpm db:migrate:deploy` / `pnpm db:seed` — load `disclo/.env` via `pnpm exec dotenv` + `@disclo/db` scripts (Windows-safe).
 - `pnpm smoke:bullmq` — disposable queue + worker; requires `REDIS_URL` in `.env`.
+- **Shared Redis:** all BullMQ queues/workers use prefix `disclo_` (`getBullmqQueueOptions` in `@disclo/core`) so keys do not collide with other projects on the same Upstash database.
 
 ## Outputs
 

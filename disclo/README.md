@@ -2,6 +2,10 @@
 
 EU AI Act / multi-regulation compliance scanner — monorepo (Phase 1: Shopify).
 
+## Git
+
+Work on **`dev`**. The **`main`** branch at the repo root is reserved for production promotion (PR from `dev` only). CI runs on **`dev`**.
+
 ## Prerequisites
 
 - Node.js 22+

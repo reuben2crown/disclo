@@ -7,6 +7,10 @@ Disclo is a compliance SaaS for AI-content disclosures and green-claims substant
 - Workspace root: `c:/Dev/disclo-apps`
 - Monorepo root: `c:/Dev/disclo-apps/disclo`
 
+## Git branches
+- **`dev`** — Default branch for daily work; GitHub Actions CI targets `dev`. Open PRs into `dev` for features.
+- **`main`** — Stays minimal until a production release. **Only** merge into `main` via pull request whose **source branch is `dev`** (enforced by `.github/workflows/main-pr-source-dev.yml` on `dev`). Set the GitHub repo **default branch** to `dev` and protect `main` (require PR, block direct push).
+
 ## Key Directories
 - `disclo/apps/embedded/shopify` Shopify embedded app
 - `disclo/apps/api` Unified Hono API

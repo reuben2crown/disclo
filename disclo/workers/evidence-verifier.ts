@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { QUEUE_NAMES } from "@disclo/core";
+import { QUEUE_NAMES, getBullmqQueueOptions } from "@disclo/core";
 import { requireRedisUrl } from "./worker-connection.js";
 
 export const evidenceVerifierWorker = new Worker(
@@ -7,7 +7,7 @@ export const evidenceVerifierWorker = new Worker(
   async (job) => {
     console.info(`evidence-verifier job ${job.id} received (placeholder)`);
   },
-  { connection: { url: requireRedisUrl() } }
+  getBullmqQueueOptions(requireRedisUrl()),
 );
 
 void evidenceVerifierWorker;

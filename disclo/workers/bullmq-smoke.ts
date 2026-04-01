@@ -3,6 +3,7 @@
  * Run from monorepo root: `pnpm smoke:bullmq` (loads `disclo/.env` via dotenv-cli).
  */
 import { Queue, Worker } from "bullmq";
+import { getBullmqQueueOptions } from "@disclo/core";
 
 const url = process.env.REDIS_URL;
 if (!url) {
@@ -10,8 +11,8 @@ if (!url) {
   process.exit(1);
 }
 
-const connection = { url, maxRetriesPerRequest: null };
-const queueName = `disclo-infra-smoke-${Date.now()}`;
+const queueOpts = getBullmqQueueOptions(url);
+const queueName = `infra-smoke-${Date.now()}`;
 
 let processed = false;
 const worker = new Worker(
@@ -19,10 +20,10 @@ const worker = new Worker(
   async () => {
     processed = true;
   },
-  { connection },
+  queueOpts,
 );
 
-const queue = new Queue(queueName, { connection });
+const queue = new Queue(queueName, queueOpts);
 
 try {
   await queue.add("ping", { ok: true });
