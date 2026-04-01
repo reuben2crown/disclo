@@ -26,7 +26,7 @@ Active phase: Phase 1 execution
 
 ## Local environment
 
-- **Monorepo env:** `disclo/.env` (gitignored). Template: `disclo/infra/env.example`.
+- **Monorepo env:** `disclo/.env` (gitignored; **not in Git**). Template: `disclo/infra/env.example`. **Backup** before destructive tree wipes (orphan checkout cleanup, `git clean -fdx`, recursive delete of repo files); see `.cursor/rules/session-handoff.mdc`.
 - **Shopify app env:** `disclo/apps/embedded/shopify/.env` (gitignored). Template: `.env.example` in that folder.
 - Fill **real** `DATABASE_URL` (Supabase pooler recommended), `REDIS_URL`, API keys, and Shopify vars before apps, `pnpm db:migrate:deploy`, or `pnpm smoke:bullmq`.
 
