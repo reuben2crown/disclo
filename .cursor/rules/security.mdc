@@ -1,0 +1,21 @@
+---
+description: Security baseline for secrets, crypto, and webhook verification.
+globs: disclo/**/*
+alwaysApply: true
+---
+
+## Disclo Security Rules
+
+- Never commit secrets or tokens.
+- Encrypt provider tokens at rest (AES-256-GCM).
+- Verify inbound webhook signatures before processing.
+- Ensure API keys are hashed (SHA-256) before persistence. Store only the hash and the first 8 chars.
+- OAuth tokens and API keys use AES-256-GCM encryption via `packages/core/src/crypto.ts`.
+- All inbound webhooks must be HMAC-verified before processing.
+- Never log full request bodies on routes handling credentials or payment data.
+- Stripe webhooks use `stripe.webhooks.constructEvent()` — no custom HMAC.
+- Session secrets minimum 32 bytes. Validated in config.ts schema.
+- Webhook endpoint URLs must be HTTPS — reject HTTP at creation time.
+- Billing changes require mandatory Auditor security review before merge.
+
+

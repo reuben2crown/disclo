@@ -1,0 +1,10 @@
+---
+description: Notification patterns and trigger consistency.
+globs: disclo/packages/core/src/notifications/**/*
+alwaysApply: false
+---
+# Notifications Rules
+
+- Notification scenarios must map to product requirements.
+- Persist in-app notifications in database before dispatch.
+- Email payloads must be deterministic and testable.

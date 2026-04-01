@@ -1,0 +1,29 @@
+# Railway — three deployable units (same repo, different start commands / root directory).
+# Create one Railway service per row in your dashboard; point each at this repo.
+
+# --- Service: shopify-app ---
+# Root directory: disclo
+# Build: pnpm install && pnpm exec prisma generate --schema packages/db/prisma/schema.prisma && pnpm run build --filter=disclo-shopify
+# Start: pnpm --filter disclo-shopify run start
+# Health: configure app URL path in Shopify + Railway (e.g. /)
+
+# --- Service: api ---
+# Root directory: disclo
+# Build: pnpm install && pnpm exec prisma generate --schema packages/db/prisma/schema.prisma && pnpm run build --filter=@disclo/api
+# Start: pnpm --filter @disclo/api run start (or node dist after build)
+# Health: GET /health on Hono app
+
+# --- Service: workers ---
+# Root directory: disclo
+# Build: pnpm install && pnpm exec prisma generate --schema packages/db/prisma/schema.prisma && pnpm run build --filter=@disclo/workers
+# Start: node workers/dist/main.js (adjust to your workers build output)
+# Health: optional HTTP probe or process heartbeat
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

@@ -1,0 +1,30 @@
+{
+  "name": "@disclo/workers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit",
+    "start:scan": "node dist/scan-orchestrator.js",
+    "start:text": "node dist/text-classifier.js",
+    "start:image": "node dist/image-classifier.js",
+    "start:claims": "node dist/claims-checker.js",
+    "start:report": "node dist/report-generator.js",
+    "start:evidence": "node dist/evidence-verifier.js",
+    "start:auto-scan": "node dist/auto-scan.js"
+  },
+  "dependencies": {
+    "@disclo/core": "workspace:*",
+    "@disclo/db": "workspace:*",
+    "bullmq": "^5.34.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.5"
+  }
+}

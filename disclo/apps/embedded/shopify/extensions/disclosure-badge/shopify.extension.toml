@@ -1,0 +1,7 @@
+# Theme app extension — App Block for Online Store 2.0 (disclosure + green verification badges).
+api_version = "2025-07"
+
+[[extensions]]
+type = "theme"
+name = "disclosure-badge"
+handle = "disclosure-badge"

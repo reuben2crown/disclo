@@ -1,0 +1,11 @@
+---
+description: Database safety and Prisma migration standards.
+globs: disclo/packages/db/**/*
+alwaysApply: true
+---
+# Database Rules
+
+- Prisma schema is the source of truth.
+- Never use `prisma db push` in production workflows.
+- No raw SQL in app logic; migrations only.
+- Add migrations for all schema changes.

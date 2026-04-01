@@ -1,0 +1,30 @@
+# Twice-weekly lightweight `SELECT 1` against Supabase Postgres to reduce risk of free-tier
+# project pause due to inactivity. Configure repo secret SUPABASE_DATABASE_URL (Supabase
+# connection string, same DB as production / staging as appropriate).
+name: supabase-keep-alive
+
+on:
+  schedule:
+    - cron: "0 6 * * 1,4"
+  workflow_dispatch:
+
+jobs:
+  ping-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install psql client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Keep Supabase project active (lightweight)
+        env:
+          SUPABASE_DATABASE_URL: ${{ secrets.SUPABASE_DATABASE_URL }}
+        run: |
+          if [ -z "$SUPABASE_DATABASE_URL" ]; then
+            echo "::error::Missing SUPABASE_DATABASE_URL — add repo secret (see docs/security/secrets-runbook.md)"
+            exit 1
+          fi
+          psql "$SUPABASE_DATABASE_URL" -c "SELECT 1;"
+
+      - name: Surface failure (INFRA-11 visibility)
+        if: failure()
+        run: echo "::error::Keep-alive failed — verify secret and Supabase project status"

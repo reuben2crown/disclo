@@ -1,0 +1,11 @@
+---
+description: Enforce monorepo structure and file placement.
+globs: **/*
+alwaysApply: true
+---
+# Project Structure
+
+- Keep implementation code under `disclo/` monorepo root.
+- Keep workspace governance files at workspace root (`docs/`, `.cursor/rules/`, `CLAUDE.md`).
+- Place platform UIs in `disclo/apps/embedded/*`.
+- Place shared engine logic in `disclo/packages/core`.

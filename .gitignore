@@ -1,0 +1,15 @@
+node_modules
+.turbo
+dist
+build
+.cache
+*.log
+.DS_Store
+
+# Monorepo secrets (templates stay tracked)
+disclo/.env
+disclo/.env.*
+!disclo/infra/env.example
+disclo/apps/embedded/shopify/.env
+disclo/apps/embedded/shopify/.env.*
+

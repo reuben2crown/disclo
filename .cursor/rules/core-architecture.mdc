@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+
+## Disclo Architecture Rules
+
+1. `packages/core` never imports from `packages/adapters` — ever.
+2. All adapters implement the `PlatformAdapter` interface from `packages/core/src/types.ts`.
+3. No business logic (detection, scoring, audit) in adapter files.
+4. Access `process.env` only through `packages/core/src/config.ts`.
+5. All API routes in `apps/api/src/v1/` must apply plan enforcement middleware before business logic.
+6. Database writes use Prisma — no raw SQL except in migrations.
+7. Every new column in schema.prisma requires a migration file. Never modify existing migrations.
+8. Worker files in `workers/` import from `packages/core` only — never from `apps/`.
+9. Run `pnpm typecheck && pnpm lint && pnpm test` before every commit.
+10. TDD: write tests before implementation on every task, no exceptions.

@@ -1,0 +1,11 @@
+---
+description: Core engine boundaries and layering constraints.
+globs: disclo/packages/core/**/*
+alwaysApply: true
+---
+# Core Engine Rules
+
+- `packages/core` is platform-agnostic only.
+- Never import from `packages/adapters`.
+- Keep Node-only exports in server-only entry points.
+- Add tests for all risk, classifier, and compliance logic.

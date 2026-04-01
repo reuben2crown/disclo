@@ -1,0 +1,10 @@
+---
+description: Adapter contract and isolation rules.
+globs: disclo/packages/adapters/**/*
+alwaysApply: true
+---
+# Adapter Rules
+
+- Each adapter implements the shared `PlatformAdapter` contract.
+- Adapters may import from core types, never from other adapters.
+- Keep business logic in core; adapters are I/O only.

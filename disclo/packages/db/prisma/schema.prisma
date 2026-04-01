@@ -1,0 +1,413 @@
+// Disclo — full application schema (requirements Section 5 + shop_settings + Session for Shopify).
+// scan_items.regulations is TEXT[] per validated execution plan (multi-regulation).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- Shopify App session storage (Prisma session storage adapter) ---
+
+model Session {
+  id                  String    @id
+  shop                String
+  state               String
+  isOnline            Boolean   @default(false)
+  scope               String?
+  expires             DateTime?
+  accessToken         String
+  userId              BigInt?
+  firstName           String?
+  lastName            String?
+  email               String?
+  accountOwner        Boolean   @default(false)
+  locale              String?
+  collaborator        Boolean?  @default(false)
+  emailVerified       Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+
+  @@map("Session")
+}
+
+// --- Core identity ---
+
+model User {
+  id               String    @id @default(uuid()) @db.Uuid
+  email            String    @unique
+  emailVerified    Boolean   @default(false)
+  displayName      String?
+  avatarUrl        String?
+  billingCustomerId String?
+  agencyAccount    Boolean   @default(false)
+  mfaEnabled       Boolean   @default(false)
+  mfaSecret        String?
+  createdAt        DateTime  @default(now())
+  lastLoginAt      DateTime?
+
+  authPass         AuthPass?
+  authIdentities   AuthIdentity[]
+  ownedShops       Shop[]    @relation("ShopOwner")
+  planOverrides    PlanOverride[]
+  planOverridesCreated PlanOverride[] @relation("PlanOverrideCreatedBy")
+  apiKeys          ApiKey[]
+  notifications    Notification[]
+  webhookEndpoints WebhookEndpoint[]
+  evidenceItems    EvidenceItem[]
+  claimEvidenceLinks ClaimEvidence[] @relation("ClaimEvidenceLinkedBy")
+  auditLogsAsActor   AuditLog[] @relation("AuditLogActor")
+
+  @@map("users")
+}
+
+model AuthPass {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @unique @db.Uuid
+  email            String    @unique
+  passwordHash     String?
+  failureTrialCount Int      @default(0)
+  resetToken       String?
+  tokenExpiredAt   DateTime?
+  createdAt        DateTime  @default(now())
+  lastLoginAt      DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_pass")
+}
+
+model AuthIdentity {
+  id                  String   @id @default(uuid()) @db.Uuid
+  userId              String   @db.Uuid
+  provider            String
+  providerAccountId   String
+  providerEmail       String?
+  encryptedToken      String?
+  tokenExpiresAt      DateTime?
+  refreshToken        String?
+  createdAt           DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("auth_identities")
+}
+
+// --- Plans & shops ---
+
+model Plan {
+  id                   String   @id @default(uuid()) @db.Uuid
+  name                 String   @unique
+  displayName          String
+  priceMonthlyUsd      Decimal? @db.Decimal(8, 2)
+  maxItemsPerScan      Int?
+  textDetection        Boolean
+  imageDetection       Boolean
+  fixDashboard         Boolean
+  auditLog             Boolean
+  auditLogPdfExport    Boolean
+  monthlyAutoScan      Boolean
+  rewriteEngine        Boolean
+  maxShops             Int?
+  whiteLabelReports    Boolean
+  apiAccess            Boolean
+  apiMonthlyCalls      Int?
+  teamMembers          Int      @default(1)
+  slaSupport           String
+  active               Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  shops Shop[]
+
+  @@map("plans")
+}
+
+model PlanOverride {
+  id                 String    @id @default(uuid()) @db.Uuid
+  userId             String    @db.Uuid
+  description        String
+  overrides          Json
+  expiresAt          DateTime?
+  createdByAdminId   String?   @db.Uuid
+  createdAt          DateTime  @default(now())
+
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdByAdmin User? @relation("PlanOverrideCreatedBy", fields: [createdByAdminId], references: [id])
+
+  shops Shop[]
+
+  @@index([userId])
+  @@map("plan_overrides")
+}
+
+model Shop {
+  id               String    @id @default(uuid()) @db.Uuid
+  ownerUserId      String    @db.Uuid
+  platform         String
+  externalDomain   String
+  accessToken      String?
+  displayName      String?
+  planId           String    @db.Uuid
+  planOverrideId   String?   @db.Uuid
+  billingProvider  String    @default("shopify")
+  billingId        String?
+  lastScanAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  owner       User         @relation("ShopOwner", fields: [ownerUserId], references: [id])
+  plan        Plan         @relation(fields: [planId], references: [id])
+  planOverride PlanOverride? @relation(fields: [planOverrideId], references: [id])
+
+  shopSettings ShopSettings?
+  scans        Scan[]
+  scanItems    ScanItem[]
+  auditLogs    AuditLog[]
+  apiKeys      ApiKey[]
+  notifications Notification[]
+  evidenceScoped EvidenceItem[] @relation("EvidenceItemScopeShop")
+
+  @@unique([platform, externalDomain])
+  @@index([ownerUserId])
+  @@map("shops")
+}
+
+model ShopSettings {
+  id                  String   @id @default(uuid()) @db.Uuid
+  shopId              String   @unique @db.Uuid
+  badgeTextShort      String   @default("This content was created with AI assistance.")
+  badgeTextLong       String?
+  greenBadgeTooltip   String?
+  targetMarkets       String[] @default(["EU"])
+  autoScanOnUpdate    Boolean  @default(true)
+  notifyScanComplete  Boolean  @default(true)
+  notifyHighRisk      Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@map("shop_settings")
+}
+
+// --- Scans ---
+
+model Scan {
+  id            String    @id @default(uuid()) @db.Uuid
+  shopId        String    @db.Uuid
+  scanType      String
+  status        String
+  totalItems    Int?
+  flaggedItems  Int?
+  riskScore     Int?
+  triggeredBy   String
+  startedAt     DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime  @default(now())
+
+  shop      Shop       @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  scanItems ScanItem[]
+
+  @@index([shopId])
+  @@map("scans")
+}
+
+model ScanItem {
+  id             String   @id @default(uuid()) @db.Uuid
+  scanId         String   @db.Uuid
+  shopId         String   @db.Uuid
+  platform       String
+  contentId      String
+  contentType    String
+  field          String
+  contentHash    String
+  aiProbability  Decimal? @db.Decimal(5, 4)
+  riskLevel      String
+  status         String
+  regulations    String[]
+  flaggedClaims  String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  scan     Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  shop     Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  auditLogs AuditLog[]
+  claimEvidence ClaimEvidence[]
+
+  @@index([shopId, riskLevel])
+  @@index([shopId, status])
+  @@index([contentHash])
+  @@index([scanId])
+  @@map("scan_items")
+}
+
+model AuditLog {
+  id               String   @id @default(uuid()) @db.Uuid
+  scanItemId       String   @db.Uuid
+  shopId           String   @db.Uuid
+  action           String
+  reviewerName     String?
+  reviewerEmail    String?
+  reviewedAt       DateTime @default(now())
+  contentHash      String
+  notes            String?
+  createdByUserId  String?  @db.Uuid
+  evidenceItemId   String?  @db.Uuid
+  createdAt        DateTime @default(now())
+
+  scanItem     ScanItem      @relation(fields: [scanItemId], references: [id], onDelete: Cascade)
+  shop         Shop          @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  createdByUser User?        @relation("AuditLogActor", fields: [createdByUserId], references: [id])
+  evidenceItem EvidenceItem? @relation(fields: [evidenceItemId], references: [id], onDelete: SetNull)
+
+  @@index([shopId, createdAt])
+  @@map("audit_log")
+}
+
+// --- API & webhooks ---
+
+model ApiKey {
+  id               String   @id @default(uuid()) @db.Uuid
+  shopId           String   @db.Uuid
+  userId           String   @db.Uuid
+  keyHash          String
+  keyPrefix        String
+  name             String
+  scopes           String[]
+  monthlyLimit     Int?
+  callsThisMonth   Int      @default(0)
+  createdAt        DateTime @default(now())
+  lastUsedAt       DateTime?
+
+  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([shopId])
+  @@index([userId])
+  @@map("api_keys")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  type      String
+  title     String
+  body      String?
+  link      String?
+  readAt    DateTime?
+  shopId    String?   @db.Uuid
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shop Shop? @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([shopId])
+  @@map("notifications")
+}
+
+model WebhookEndpoint {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  url         String
+  secretHash  String
+  events      String[]
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries WebhookDelivery[]
+
+  @@index([userId])
+  @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id               String   @id @default(uuid()) @db.Uuid
+  endpointId       String   @db.Uuid
+  eventType        String
+  payload          Json
+  httpStatus       Int?
+  responseBody     String?
+  responseTimeMs   Int?
+  attemptNumber    Int      @default(1)
+  succeeded        Boolean
+  attemptedAt      DateTime @default(now())
+  nextRetryAt      DateTime?
+
+  endpoint WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+
+  @@index([endpointId])
+  @@index([attemptedAt])
+  @@map("webhook_deliveries")
+}
+
+// --- Evidence ---
+
+model EvidenceItem {
+  id                       String    @id @default(uuid()) @db.Uuid
+  userId                   String    @db.Uuid
+  evidenceType             String
+  title                    String
+  certificationBody        String?
+  certificateNumber        String?
+  verificationStatus       String    @default("pending")
+  qualityTier              String
+  verifiedAt               DateTime?
+  nextVerificationAt       DateTime?
+  referenceUrl             String?
+  pageSnapshot             String?
+  documentUrl              String?
+  documentHash             String?
+  assertionData            Json?
+  scope                    String    @default("account")
+  scopeShopId              String?   @db.Uuid
+  scopeExternalProductId   String?
+  notes                    String?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  user       User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scopeShop  Shop? @relation("EvidenceItemScopeShop", fields: [scopeShopId], references: [id], onDelete: SetNull)
+  auditLogs  AuditLog[]
+  claimLinks ClaimEvidence[]
+
+  @@index([userId])
+  @@map("evidence_items")
+}
+
+model ClaimEvidence {
+  id               String   @id @default(uuid()) @db.Uuid
+  scanItemId       String   @db.Uuid
+  evidenceItemId   String   @db.Uuid
+  linkedByUserId   String   @db.Uuid
+  linkedAt         DateTime @default(now())
+
+  scanItem     ScanItem     @relation(fields: [scanItemId], references: [id], onDelete: Cascade)
+  evidenceItem EvidenceItem @relation(fields: [evidenceItemId], references: [id], onDelete: Restrict)
+  linkedByUser User         @relation("ClaimEvidenceLinkedBy", fields: [linkedByUserId], references: [id])
+
+  @@unique([scanItemId, evidenceItemId])
+  @@map("claim_evidence")
+}
+
+model CertificationRegistryConfig {
+  id                  String  @id @default(uuid()) @db.Uuid
+  code                String  @unique
+  displayName         String
+  issuingBody         String
+  lookupMethod        String
+  apiEndpoint         String?
+  apiAuthType         String?
+  urlPattern          String?
+  checkFrequencyDays  Int     @default(30)
+  active              Boolean @default(true)
+  notes               String?
+
+  @@map("certification_registry_configs")
+}

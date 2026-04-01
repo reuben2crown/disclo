@@ -1,0 +1,11 @@
+---
+description: Shopify embedded app implementation standards.
+globs: disclo/apps/embedded/shopify/**/*
+alwaysApply: true
+---
+# Shopify Rules
+
+- Use official Shopify Remix conventions.
+- Keep authenticated routes behind `shopify.authenticate.admin`.
+- Maintain CSP response headers in server entry.
+- Use persistent session storage for production.

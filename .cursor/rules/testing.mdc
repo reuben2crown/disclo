@@ -1,0 +1,18 @@
+---
+description: Testing policy and test-first requirements.
+globs: disclo/**/*
+alwaysApply: true
+---
+
+## Disclo Testing Rules
+
+- Write the test BEFORE writing the implementation for all new features (TDD). No exceptions.
+- Never use `test.skip` or `it.skip` in committed code.
+- Keep unit, integration, and contract tests for critical flows.
+- All new functions in `packages/core` require unit tests.
+- Coverage threshold: 80% for core package, 70% for adapters.
+- All new API routes require integration tests.
+- Security-sensitive changes require explicit regression tests.
+- Mock external APIs (GPTZero, Hive, Anthropic, Stripe) — never call real APIs in unit tests.
+- E2E tests (Playwright) run in CI against the Railway staging environment.
+- Follow `docs/TESTING.md` for governance thresholds.

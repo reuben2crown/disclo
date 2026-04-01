@@ -1,0 +1,11 @@
+---
+description: Billing provider split and subscription event handling.
+globs: disclo/packages/core/src/billing/**/*
+alwaysApply: false
+---
+# Billing Rules
+
+- Shopify stores use Shopify Billing API.
+- Non-Shopify platforms use Dodo Payments.
+- Subscription webhooks must invalidate plan cache.
+- Billing changes require audit entries and tests.

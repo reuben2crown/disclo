@@ -1,0 +1,10 @@
+---
+description: Cross-session handoff requirements for agent continuity.
+globs: **/*
+alwaysApply: true
+---
+# Session Handoff Rules
+
+- Read `docs/SESSION.md` at session start.
+- Update `docs/SESSION.md` before ending meaningful work.
+- Include completed tasks, in-progress state, decisions, blockers, and next steps.

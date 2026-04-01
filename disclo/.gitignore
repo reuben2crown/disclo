@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+.turbo
+.cache
+.env
+.env.*
+!.env.example
+*.log
+coverage
+.DS_Store
+apps/embedded/shopify/.shopify
+apps/embedded/shopify/build
+apps/embedded/shopify/public/build
+packages/db/prisma/migrations/**/migration_lock.toml

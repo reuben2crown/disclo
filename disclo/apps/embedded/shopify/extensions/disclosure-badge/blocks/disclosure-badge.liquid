@@ -1,0 +1,21 @@
+{% comment %}
+  App block: renders AI disclosure / substantiated green claim badges from product metafields.
+  Wire namespace `eu_ai_compliance` and keys from the Shopify adapter (AD-03).
+{% endcomment %}
+<div class="disclo-badge" {{ block.shopify_attributes }}>
+  {% if product.metafields.eu_ai_compliance.ai_content_disclosure %}
+    <p class="disclo-badge__text">
+      {{ product.metafields.eu_ai_compliance.ai_content_disclosure }}
+    </p>
+  {% else %}
+    <p class="disclo-badge__text disclo-badge__text--muted">Disclo: no disclosure label on this product.</p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Disclo disclosure",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}
