@@ -43,7 +43,7 @@ todos:
     status: completed
   - id: w1-infra-02
     content: "INFRA-02: Complete Prisma schema (ALL 17 tables) + initial migration + seed (5 plans, 6 cert registries)"
-    status: pending
+    status: completed
   - id: w1-infra-03
     content: "INFRA-03: Core config — config.ts with Zod validation for all env vars (GPTZero, Hive, Claude, Shopify, Resend, R2, Redis, DB)"
     status: completed
@@ -67,7 +67,7 @@ todos:
     status: pending
   - id: w1-infra-10
     content: "INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI"
-    status: pending
+    status: completed
   - id: w1-infra-11
     content: "INFRA-11: GitHub Actions keep-alive workflow (supabase-keep-alive.yml) — twice-weekly SELECT 1, secrets wired, failure visibility, runbook to disable on Supabase Pro upgrade"
     status: pending
@@ -354,7 +354,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 | `docs/security/incident-response.md`     | Done — linked from `docs/SESSION.md`                                                         |
 
 
-**Ready for Sprint 1 / Week 1?** **Yes** for core types + regulation registry + most INFRA code paths. **Still open for strict Maintainer bar:** `w1-infra-02` (reachable DB + migrate deploy), `w1-infra-07` (BullMQ smoke with real Redis), `w1-infra-09` / `w1-infra-10` / `w1-infra-11` (Railway deploy, pooler `DATABASE_URL`, keep-alive run). **Sprint 0 foundations:** push to `main` for `s0-ci-github-main`; Linear: SEC/COMP issues updated (COMP-02/03 remain backlog; COMP-01 in review).
+**Ready for Sprint 1 / Week 1?** **Yes** for core types + regulation registry + **Supabase migrate + seed**. **Still open for strict Maintainer bar:** `w1-infra-07` (set `REDIS_URL` `rediss://…` from Upstash for `pnpm smoke:bullmq`), `w1-infra-09` / `w1-infra-11` (Railway when you release, keep-alive with secret). **Sprint 0 foundations:** push `dev`, confirm Actions; **PR `dev` → `main`** for release gate; Linear: SEC/COMP as before.
 
 ---
 
@@ -386,7 +386,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 **All INFRA rows reset to pending (2026-03-31):** Earlier checks treated “files in repo” as done. They are **not** complete until integrations match Maintainer policy (real DB migrate path, Redis/BullMQ smoke, Railway deploy green, CI on `main`, etc.).
 
 - ~~INFRA-01: Monorepo scaffold — pnpm workspaces, Turborepo pipelines, shared tsconfig, ESLint, Prettier, Vitest workspace~~ (`w1-infra-01`)
-- INFRA-02: Complete Prisma schema (ALL 17 tables) + initial migration + seed (5 plans, 6 cert registries) (`w1-infra-02`) — **code + migration on disk; prove `pnpm db:migrate:deploy` against reachable Supabase (pooler URL)**
+- [x] ~~INFRA-02: Complete Prisma schema (ALL 17 tables) + initial migration + seed (5 plans, 6 cert registries)~~ (`w1-infra-02`) — **2026-04-01:** `pnpm db:migrate:deploy` + `pnpm db:seed` against Supabase (`DIRECT_URL` for migrate; single `DATABASE_URL` pooler for client)
 - ~~INFRA-03: Core config — config.ts with Zod validation for all env vars (GPTZero, Hive, Claude, Shopify, Resend, R2, Redis, DB)~~ (`w1-infra-03`)
 - ~~INFRA-04: Shared error classes — errors.ts (ClassifierError, AdapterError, PlanError, ValidationError, BillingError, EvidenceError)~~ (`w1-infra-04`)
 - ~~INFRA-05: Structured logger — logger.ts with Pino, JSON output, correlation IDs~~ (`w1-infra-05`)
@@ -394,7 +394,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 - INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base (`w1-infra-07`) — **queues wired; prove `pnpm smoke:bullmq` with real `REDIS_URL`**
 - ~~INFRA-08: GitHub Actions CI — lint, typecheck, test on PR~~ (`w1-infra-08`)
 - INFRA-09: Railway deployment config (`w1-infra-09`)
-- INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI (`w1-infra-10`)
+- [x] ~~INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI~~ (`w1-infra-10`) — **2026-04-01:** `schema.prisma` `directUrl` + `infra/env.example`; migrate/seed proven locally
 - INFRA-11: GitHub Actions keep-alive workflow (supabase-keep-alive.yml) — twice-weekly SELECT 1, secrets wired, failure visibility, runbook to disable on Supabase Pro upgrade (`w1-infra-11`)
 
 ### Core (Linear epic BE / REU-29)

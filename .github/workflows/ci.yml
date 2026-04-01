@@ -15,9 +15,10 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     env:
-      # Prisma loads `DATABASE_URL` from env for schema validation; `prisma generate` does not open a TCP connection.
-      # Use a syntactically valid placeholder in CI. Real Supabase URLs belong in repo/env secrets for deploy and local `.env` only.
+      # Prisma loads datasource URLs for schema validation; `prisma generate` does not open a TCP connection.
+      # `schema.prisma` sets `directUrl` for migrations — both vars must exist. Real URLs stay in local `.env` / deploy secrets only.
       DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+      DIRECT_URL: postgresql://ci:ci@127.0.0.1:5432/ci
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

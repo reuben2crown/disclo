@@ -10,6 +10,8 @@ const serverEnvSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   DATABASE_URL: z.string().url().optional(),
+  /** Prisma migrations when `DATABASE_URL` is a pooler URL; see `packages/db/prisma/schema.prisma`. */
+  DIRECT_URL: z.string().url().optional(),
   REDIS_URL: z.string().url().optional(),
   ENCRYPTION_KEY: z
     .string()

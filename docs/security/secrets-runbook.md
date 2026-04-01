@@ -15,8 +15,9 @@
 
 | Variable | Purpose | Where stored | Rotation trigger |
 | --- | --- | --- | --- |
-| `DATABASE_URL` | Postgres (Supabase); Prisma | Railway, local `.env` | Pooler/direct URL change; credential rotation |
-| `REDIS_URL` | BullMQ, cache (Upstash) | Railway, local `.env` | Provider rotation |
+| `DATABASE_URL` | Postgres (Supabase); Prisma Client (prefer transaction pooler `6543`) | Railway, local `.env` | Pooler/direct URL change; credential rotation |
+| `DIRECT_URL` | Prisma **migrations** when `DATABASE_URL` uses PgBouncer (see `schema.prisma` `directUrl`) | Local `.env`, CI placeholder | Same DB password as `DATABASE_URL`; rotate with DB creds |
+| `REDIS_URL` | BullMQ, cache (Upstash `rediss://…`) | Railway, local `.env` | Provider rotation |
 | `ENCRYPTION_KEY` | AES-256-GCM (`packages/core` crypto) | Railway, local `.env` | Compromise suspicion; annual review |
 | `APP_URL` | Public app base URL | Railway, local `.env` | Domain change |
 | `NODE_ENV` | Runtime mode | Railway, local | N/A |
