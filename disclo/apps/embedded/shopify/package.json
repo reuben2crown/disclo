@@ -17,14 +17,21 @@
     "prisma": "prisma",
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:install-browsers": "playwright install"
   },
   "type": "module",
   "engines": {
     "node": ">=20.19 <22 || >=22.12"
   },
   "dependencies": {
+    "@disclo/adapters": "workspace:*",
+    "@disclo/core": "workspace:*",
     "@disclo/db": "workspace:*",
+    "bullmq": "^5.58.5",
+    "ioredis": "^5.8.2",
     "@prisma/client": "^6.2.1",
     "@remix-run/dev": "^2.16.1",
     "@remix-run/fs-routes": "^2.16.1",
@@ -53,7 +60,8 @@
     "prettier": "^3.2.4",
     "typescript": "^5.2.2",
     "vite": "^6.2.2",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "@playwright/test": "^1.51.0"
   },
   "workspaces": [
     "extensions/*"

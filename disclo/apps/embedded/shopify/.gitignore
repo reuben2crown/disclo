@@ -23,3 +23,8 @@ database.sqlite
 # Ignore shopify files created during app dev
 .shopify/*
 .shopify.lock
+
+# Playwright
+/playwright-report/
+/test-results/
+/blob-report/

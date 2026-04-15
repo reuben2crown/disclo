@@ -90,3 +90,13 @@ Any output that:
 - violates contracts
 
 → must be rejected and regenerated
+
+---
+
+## End-to-end (Playwright, Shopify embedded app)
+
+- **Package:** `disclo/apps/embedded/shopify`. **Specs:** `e2e/*.spec.ts`. **Config:** `playwright.config.ts`.
+- **Not** part of default `pnpm test` (Vitest). Run **`pnpm test:e2e`** from `disclo/` after a server is reachable.
+- **Local:** First time on a machine: `pnpm --filter disclo-shopify test:e2e:install-browsers` (downloads Chromium and friends). In one terminal, `pnpm --filter disclo-shopify dev` (or your usual Shopify CLI flow). Set **`PLAYWRIGHT_BASE_URL`** to the URL the CLI prints (tunnel or `http://127.0.0.1:3000` when Vite uses the default port). Then `pnpm test:e2e` from `disclo/`.
+- **CI:** Workflow **E2E Playwright** (manual `workflow_dispatch`) asks for **`base_url`**. The app must already be running at that URL.
+- **Coverage today:** `/health`, marketing `/`, `/auth/login` (Sprint 1 smoke). Install → embedded admin → scan UI still **manual** or future specs; see `docs/QA_TRACEABILITY.md`.

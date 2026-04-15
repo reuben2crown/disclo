@@ -1,0 +1,38 @@
+# Manual browser checks against a running app (local tunnel, Railway preview, etc.).
+# Does not start the Remix server; deploy or run `shopify app dev` first, then pass the public URL.
+name: E2E Playwright
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Full origin of the app (e.g. https://xxx.trycloudflare.com)"
+        required: true
+        type: string
+
+defaults:
+  run:
+    working-directory: disclo
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BASE_URL: ${{ inputs.base_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: disclo/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        working-directory: disclo/apps/embedded/shopify
+        run: pnpm exec playwright install chromium --with-deps
+      - name: Run Playwright
+        working-directory: disclo/apps/embedded/shopify
+        run: pnpm exec playwright test
