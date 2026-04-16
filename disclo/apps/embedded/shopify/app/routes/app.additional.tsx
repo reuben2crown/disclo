@@ -53,7 +53,7 @@ export default function AdditionalPage() {
                     target="_blank"
                     removeUnderline
                   >
-                    App nav best practices
+                    App navigation guidelines
                   </Link>
                 </List.Item>
               </List>

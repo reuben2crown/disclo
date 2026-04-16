@@ -9,6 +9,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    },
+    "./i18n": {
+      "types": "./dist/i18n/index.d.ts",
+      "import": "./dist/i18n/index.js"
+    },
+    "./regulations": {
+      "types": "./dist/regulations/index.d.ts",
+      "import": "./dist/regulations/index.js"
     }
   },
   "scripts": {
@@ -18,6 +30,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@disclo/db": "workspace:*",
     "bullmq": "^5.58.5",
     "ioredis": "^5.8.2",
     "pino": "^9.6.0",

@@ -1469,7 +1469,7 @@ flowchart TB
 | **Total (scaled)** |                                         |                                            | **~$35-50/mo** (add Supabase Pro + steady Upstash) |
 
 
-Workers run in a single process (`workers/main.ts`) that instantiates all BullMQ Worker instances. Split into separate Railway services only when queue depth or CPU warrants it.
+Workers run in a single process (`workers/src/main.ts` → `node dist/main.js`) that instantiates all BullMQ Worker instances. Split into separate Railway services only when queue depth or CPU warrants it.
 
 ---
 

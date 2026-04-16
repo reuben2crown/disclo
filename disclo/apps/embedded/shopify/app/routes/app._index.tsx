@@ -1,333 +1,375 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
-import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  Button,
-  BlockStack,
-  Box,
-  List,
-  Link,
-  InlineStack,
-} from "@shopify/polaris";
-import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
+import { json } from "@remix-run/node";
+import { Link, useFetcher, useLoaderData, useNavigate, useOutletContext, useRevalidator, } from "@remix-run/react";
+import { Banner, BlockStack, Button, Card, ChoiceList, InlineGrid, List, Page, ProgressBar, Text } from "@shopify/polaris";
+import { TitleBar } from "@shopify/app-bridge-react";
+import { getMerchantMessages } from "@disclo/core/i18n";
+import prisma from "../db.server";
+import { getDashboardShopSnapshot } from "../dashboard-data.server";
+import type { AppI18nOutletContext } from "../i18n-outlet-context.js";
+import { localeFromRequest } from "../i18n.server.js";
+import { getMerchantSupportEmail } from "../merchant-support.server.js";
+import { parseTargetMarketsFromForm } from "../target-markets-form.server";
 import { authenticate } from "../shopify.server";
 
+const MARKET_CHOICES = [
+  { label: "European Union", value: "EU" },
+  { label: "United States (federal)", value: "US" },
+  { label: "Florida (US-FL)", value: "US-FL" },
+  { label: "New York (US-NY)", value: "US-NY" },
+];
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
-
-  return null;
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        product: {
-          title: `${color} Snowboard`,
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-
-  const product = responseJson.data!.productCreate!.product!;
-  const variantId = product.variants.edges[0]!.node!.id!;
-
-  const variantResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyRemixTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        productVariants {
-          id
-          price
-          barcode
-          createdAt
-        }
-      }
-    }`,
-    {
-      variables: {
-        productId: product.id,
-        variants: [{ id: variantId, price: "100.00" }],
-      },
-    },
-  );
-
-  const variantResponseJson = await variantResponse.json();
-
+  const { session } = await authenticate.admin(request);
+  const snapshot = await getDashboardShopSnapshot(prisma, session.shop);
   return {
-    product: responseJson!.data!.productCreate!.product,
-    variant:
-      variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants,
+    snapshot,
+    shopDomain: session.shop,
+    merchantSupportEmail: getMerchantSupportEmail(),
   };
 };
 
-export default function Index() {
-  const fetcher = useFetcher<typeof action>();
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const m = getMerchantMessages(localeFromRequest(request));
+  const { session } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+  if (intent !== "updateMarkets") {
+    return json(
+      { ok: false, error: m.dashboard.unknownAction },
+      { status: 400 },
+    );
+  }
 
-  const shopify = useAppBridge();
-  const isLoading =
-    ["loading", "submitting"].includes(fetcher.state) &&
-    fetcher.formMethod === "POST";
-  const productId = fetcher.data?.product?.id.replace(
-    "gid://shopify/Product/",
-    "",
+  const shop = await prisma.shop.findUnique({
+    where: {
+      platform_externalDomain: {
+        platform: "shopify",
+        externalDomain: session.shop,
+      },
+    },
+  });
+
+  if (!shop) {
+    return json(
+      { ok: false, error: m.dashboard.shopMissingMarkets },
+      { status: 404 },
+    );
+  }
+
+  const markets = parseTargetMarketsFromForm(formData.getAll("markets"));
+
+  if (markets.length === 0) {
+    return json(
+      { ok: false, error: m.dashboard.marketsRequired },
+      { status: 400 },
+    );
+  }
+
+  await prisma.shopSettings.upsert({
+    where: { shopId: shop.id },
+    create: { shopId: shop.id, targetMarkets: markets },
+    update: { targetMarkets: markets },
+  });
+
+  return json({ ok: true });
+};
+
+export default function Dashboard() {
+  const { m } = useOutletContext<AppI18nOutletContext>();
+  const { snapshot, shopDomain, merchantSupportEmail } =
+    useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const revalidator = useRevalidator();
+  const scanFetcher = useFetcher<{
+    ok?: boolean;
+    error?: string;
+    scanId?: string;
+    actionUrl?: string;
+    actionLabel?: string;
+  }>();
+  const marketsFetcher = useFetcher<{ ok?: boolean; error?: string }>();
+  const [marketsSelected, setMarketsSelected] = useState<string[]>(
+    () => snapshot?.targetMarkets ?? ["EU"],
   );
 
   useEffect(() => {
-    if (productId) {
-      shopify.toast.show("Product created");
+    if (snapshot?.targetMarkets?.length) {
+      setMarketsSelected(snapshot.targetMarkets);
     }
-  }, [productId, shopify]);
-  const generateProduct = () => fetcher.submit({}, { method: "POST" });
+  }, [snapshot?.targetMarkets]);
+
+  useEffect(() => {
+    if (scanFetcher.data?.ok && scanFetcher.data.scanId) {
+      navigate(`/app/scans/${scanFetcher.data.scanId}`);
+    }
+  }, [scanFetcher.data, navigate]);
+
+  useEffect(() => {
+    if (marketsFetcher.data?.ok) {
+      revalidator.revalidate();
+    }
+  }, [marketsFetcher.data, revalidator]);
+
+  const complianceLabel =
+    snapshot?.displayRiskScore != null
+      ? String(snapshot.displayRiskScore)
+      : m.dashboard.complianceUnavailable;
+
+  const lastScanLabel = snapshot?.lastScanAt
+    ? new Date(snapshot.lastScanAt).toLocaleString()
+    : m.dashboard.noScansYet;
+
+  const rb = snapshot?.riskBreakdown;
+  const pct = (n: number, d: number) =>
+    d > 0 ? Math.round((n / d) * 100) : 0;
 
   return (
     <Page>
-      <TitleBar title="Remix app template">
-        <button variant="primary" onClick={generateProduct}>
-          Generate a product
-        </button>
-      </TitleBar>
+      <TitleBar title={m.dashboard.titleBar} />
       <BlockStack gap="500">
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="500">
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Congrats on creating a new Shopify app 🎉
-                  </Text>
-                  <Text variant="bodyMd" as="p">
-                    This embedded app template uses{" "}
-                    <Link
-                      url="https://shopify.dev/docs/apps/tools/app-bridge"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      App Bridge
-                    </Link>{" "}
-                    interface examples like an{" "}
-                    <Link url="/app/additional" removeUnderline>
-                      additional page in the app nav
-                    </Link>
-                    , as well as an{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      Admin GraphQL
-                    </Link>{" "}
-                    mutation demo, to provide a starting point for app
-                    development.
-                  </Text>
-                </BlockStack>
-                <BlockStack gap="200">
-                  <Text as="h3" variant="headingMd">
-                    Get started with products
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    Generate a product with GraphQL and get the JSON output for
-                    that product. Learn more about the{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      productCreate
-                    </Link>{" "}
-                    mutation in our API references.
-                  </Text>
-                </BlockStack>
-                <InlineStack gap="300">
-                  <Button loading={isLoading} onClick={generateProduct}>
-                    Generate a product
-                  </Button>
-                  {fetcher.data?.product && (
-                    <Button
-                      url={`shopify:admin/products/${productId}`}
-                      target="_blank"
-                      variant="plain"
-                    >
-                      View product
-                    </Button>
-                  )}
-                </InlineStack>
-                {fetcher.data?.product && (
-                  <>
-                    <Text as="h3" variant="headingMd">
-                      {" "}
-                      productCreate mutation
-                    </Text>
-                    <Box
-                      padding="400"
-                      background="bg-surface-active"
-                      borderWidth="025"
-                      borderRadius="200"
-                      borderColor="border"
-                      overflowX="scroll"
-                    >
-                      <pre style={{ margin: 0 }}>
-                        <code>
-                          {JSON.stringify(fetcher.data.product, null, 2)}
-                        </code>
-                      </pre>
-                    </Box>
-                    <Text as="h3" variant="headingMd">
-                      {" "}
-                      productVariantsBulkUpdate mutation
-                    </Text>
-                    <Box
-                      padding="400"
-                      background="bg-surface-active"
-                      borderWidth="025"
-                      borderRadius="200"
-                      borderColor="border"
-                      overflowX="scroll"
-                    >
-                      <pre style={{ margin: 0 }}>
-                        <code>
-                          {JSON.stringify(fetcher.data.variant, null, 2)}
-                        </code>
-                      </pre>
-                    </Box>
-                  </>
-                )}
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-          <Layout.Section variant="oneThird">
-            <BlockStack gap="500">
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    App template specs
-                  </Text>
-                  <BlockStack gap="200">
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Framework
-                      </Text>
-                      <Link
-                        url="https://remix.run"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        Remix
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Database
-                      </Text>
-                      <Link
-                        url="https://www.prisma.io/"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        Prisma
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Interface
-                      </Text>
-                      <span>
-                        <Link
-                          url="https://polaris.shopify.com"
-                          target="_blank"
-                          removeUnderline
-                        >
-                          Polaris
-                        </Link>
-                        {", "}
-                        <Link
-                          url="https://shopify.dev/docs/apps/tools/app-bridge"
-                          target="_blank"
-                          removeUnderline
-                        >
-                          App Bridge
-                        </Link>
-                      </span>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        API
-                      </Text>
-                      <Link
-                        url="https://shopify.dev/docs/api/admin-graphql"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        GraphQL API
-                      </Link>
-                    </InlineStack>
-                  </BlockStack>
-                </BlockStack>
-              </Card>
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Next steps
-                  </Text>
-                  <List>
-                    <List.Item>
-                      Build an{" "}
-                      <Link
-                        url="https://shopify.dev/docs/apps/getting-started/build-app-example"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        {" "}
-                        example app
-                      </Link>{" "}
-                      to get started
-                    </List.Item>
-                    <List.Item>
-                      Explore Shopify’s API with{" "}
-                      <Link
-                        url="https://shopify.dev/docs/apps/tools/graphiql-admin-api"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        GraphiQL
-                      </Link>
-                    </List.Item>
-                  </List>
-                </BlockStack>
-              </Card>
+        {!snapshot && (
+          <Banner tone="warning" title={m.dashboard.setupBannerTitle}>
+            <p>{m.dashboard.setupBannerBody(shopDomain)}</p>
+          </Banner>
+        )}
+
+        {snapshot && (
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.onboardingHeading}
+              </Text>
+              <List type="bullet">
+                <List.Item>
+                  {snapshot.onboarding.shopLinked
+                    ? m.dashboard.onboardingLinked
+                    : m.dashboard.onboardingLinkShop}
+                </List.Item>
+                <List.Item>
+                  {snapshot.onboarding.marketsConfigured
+                    ? m.dashboard.onboardingMarketsOk
+                    : m.dashboard.onboardingMarketsTodo}
+                </List.Item>
+                <List.Item>
+                  {snapshot.onboarding.firstScanComplete
+                    ? m.dashboard.onboardingScanOk
+                    : m.dashboard.onboardingScanTodo}
+                </List.Item>
+              </List>
             </BlockStack>
-          </Layout.Section>
-        </Layout>
+          </Card>
+        )}
+
+        {snapshot?.activeScan && (
+          <Banner tone="info" title={m.dashboard.activeScanTitle}>
+            <p>
+              {m.dashboard.activeScanBody(
+                snapshot.activeScan.processedItems,
+                String(snapshot.activeScan.totalItems ?? "—"),
+              )}{" "}
+              <Link to={`/app/scans/${snapshot.activeScan.id}`}>
+                {m.dashboard.openLiveProgress}
+              </Link>
+            </p>
+          </Banner>
+        )}
+
+        {scanFetcher.data && !scanFetcher.data.ok && scanFetcher.data.error && (
+          <Banner tone="critical" title={m.dashboard.scanFailedTitle}>
+            <BlockStack gap="200">
+              <p>{scanFetcher.data.error}</p>
+              {scanFetcher.data.actionUrl && scanFetcher.data.actionLabel ? (
+                <Button
+                  url={scanFetcher.data.actionUrl}
+                  external
+                  variant="primary"
+                >
+                  {scanFetcher.data.actionLabel}
+                </Button>
+              ) : null}
+            </BlockStack>
+          </Banner>
+        )}
+
+        {marketsFetcher.data && !marketsFetcher.data.ok && marketsFetcher.data.error && (
+          <Banner
+            tone="critical"
+            title={m.dashboard.marketsFailedTitle}
+          >
+            <p>{marketsFetcher.data.error}</p>
+          </Banner>
+        )}
+
+        <InlineGrid columns={{ xs: 1, sm: 2, md: 3 }} gap="400">
+          <Card>
+            <BlockStack gap="200">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.complianceHeading}
+              </Text>
+              <Text as="p" variant="heading2xl">
+                {complianceLabel}
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                {m.dashboard.complianceHelp}
+              </Text>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="200">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.planHeading}
+              </Text>
+              <Text as="p" variant="bodyLg">
+                {snapshot?.planDisplayName ?? "—"}
+              </Text>
+            </BlockStack>
+          </Card>
+
+          <Card>
+            <BlockStack gap="200">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.lastScanHeading}
+              </Text>
+              <Text as="p" variant="bodyMd">
+                {lastScanLabel}
+              </Text>
+              {snapshot?.lastScanStatus && (
+                <Text as="p" variant="bodySm" tone="subdued">
+                  {m.dashboard.lastScanStatus(snapshot.lastScanStatus)}
+                </Text>
+              )}
+            </BlockStack>
+          </Card>
+        </InlineGrid>
+
+        {rb && rb.total > 0 && (
+          <Card>
+            <BlockStack gap="400">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.riskHeading}
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                {m.dashboard.riskHelp}
+              </Text>
+              <BlockStack gap="200">
+                <BlockStack gap="100">
+                  <Text as="p" variant="bodySm">
+                    {m.dashboard.riskHigh(
+                      rb.high,
+                      pct(rb.high, rb.total),
+                    )}
+                  </Text>
+                  <ProgressBar progress={pct(rb.high, rb.total)} tone="critical" />
+                </BlockStack>
+                <BlockStack gap="100">
+                  <Text as="p" variant="bodySm">
+                    {m.dashboard.riskReview(
+                      rb.review,
+                      pct(rb.review, rb.total),
+                    )}
+                  </Text>
+                  <ProgressBar progress={pct(rb.review, rb.total)} tone="highlight" />
+                </BlockStack>
+                <BlockStack gap="100">
+                  <Text as="p" variant="bodySm">
+                    {m.dashboard.riskClear(
+                      rb.none,
+                      pct(rb.none, rb.total),
+                    )}
+                  </Text>
+                  <ProgressBar progress={pct(rb.none, rb.total)} tone="success" />
+                </BlockStack>
+              </BlockStack>
+            </BlockStack>
+          </Card>
+        )}
+
+        {snapshot && snapshot.applicableRegulations.length > 0 && (
+          <Card>
+            <BlockStack gap="300">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.regulationsHeading}
+              </Text>
+              <Text as="p" variant="bodySm" tone="subdued">
+                {m.dashboard.regulationsHelp}
+              </Text>
+              <InlineGrid columns={{ xs: 1, sm: 2 }} gap="300">
+                {snapshot.applicableRegulations.map((r) => (
+                  <Card key={r.code} padding="400">
+                    <BlockStack gap="100">
+                      <Text as="span" variant="bodyMd" fontWeight="semibold">
+                        {r.displayName}
+                      </Text>
+                      <Text as="span" variant="bodySm" tone="subdued">
+                        {r.category === "ai_disclosure"
+                          ? m.dashboard.regAi
+                          : m.dashboard.regGreen}
+                      </Text>
+                    </BlockStack>
+                  </Card>
+                ))}
+              </InlineGrid>
+            </BlockStack>
+          </Card>
+        )}
+
+        {snapshot && (
+          <Card>
+            <BlockStack gap="400">
+              <Text as="h2" variant="headingMd">
+                {m.dashboard.marketsHeading}
+              </Text>
+              <Text as="p" variant="bodyMd" tone="subdued">
+                {m.dashboard.marketsHelp}
+              </Text>
+              <ChoiceList
+                title={m.dashboard.choiceListTitle}
+                titleHidden
+                choices={MARKET_CHOICES}
+                selected={marketsSelected}
+                onChange={(v) => {
+                  setMarketsSelected(v);
+                  const fd = new FormData();
+                  fd.set("intent", "updateMarkets");
+                  for (const m of v) {
+                    fd.append("markets", m);
+                  }
+                  marketsFetcher.submit(fd, { method: "post" });
+                }}
+                allowMultiple
+              />
+              {marketsFetcher.state !== "idle" && (
+                <Text as="p" variant="bodySm" tone="subdued">
+                  {m.dashboard.saving}
+                </Text>
+              )}
+            </BlockStack>
+          </Card>
+        )}
+
+        <Card>
+          <BlockStack gap="300">
+            <Text as="h2" variant="headingMd">
+              {m.dashboard.quickActionsHeading}
+            </Text>
+            <scanFetcher.Form method="post" action="/app/scan">
+              <Button
+                variant="primary"
+                submit
+                disabled={!snapshot || scanFetcher.state !== "idle"}
+                loading={scanFetcher.state !== "idle"}
+              >
+                {m.dashboard.startFullScan}
+              </Button>
+            </scanFetcher.Form>
+            <Text as="p" variant="bodySm" tone="subdued">
+              {m.dashboard.quickActionsHelp(merchantSupportEmail)}
+            </Text>
+          </BlockStack>
+        </Card>
       </BlockStack>
     </Page>
   );

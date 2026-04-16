@@ -1,4 +1,4 @@
-import type { RegulationConfig } from "../types.js";
+import type { RegulationConfig } from "../models/types.js";
 
 /** Canonical regulation definitions (code constants; ship with releases, not DB). */
 export const REGULATION_CONFIGS = [

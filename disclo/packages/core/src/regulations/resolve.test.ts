@@ -8,7 +8,7 @@ describe("resolveRegulationsForMarkets", () => {
     expect(new Set(REGULATION_CODES).size).toBe(5);
   });
 
-  it("EU adds AI disclosure + EU green claims", () => {
+  it("EU adds AI Act Compliance + EU green claims", () => {
     const codes = resolveRegulationsForMarkets(["EU"]).map((c) => c.code);
     expect(codes).toContain("eu_ai_act_art50");
     expect(codes).toContain("eu_green_claims");

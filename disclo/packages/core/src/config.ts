@@ -1,4 +1,14 @@
 import { z } from "zod";
+import {
+  FALLBACK_LOCALE,
+  SUPPORTED_LOCALES,
+  type SupportedLocale,
+} from "./i18n/locale.js";
+
+const DEFAULT_LOCALE_ENUM = SUPPORTED_LOCALES as unknown as [
+  SupportedLocale,
+  ...SupportedLocale[],
+];
 
 /**
  * Zod-validated environment for server-side services.
@@ -9,6 +19,8 @@ const serverEnvSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
+  /** Default UI locale when no cookie and Accept-Language is missing or unsupported. */
+  DEFAULT_LOCALE: z.enum(DEFAULT_LOCALE_ENUM).default(FALLBACK_LOCALE),
   DATABASE_URL: z.string().url().optional(),
   /** Prisma migrations when `DATABASE_URL` is a pooler URL; see `packages/db/prisma/schema.prisma`. */
   DIRECT_URL: z.string().url().optional(),
@@ -43,6 +55,8 @@ const serverEnvSchema = z.object({
   SUPPORT_ALERT_WEBHOOK_URL: z.string().url().optional(),
   SENTRY_DSN: z.string().url().optional(),
   POSTHOG_API_KEY: z.string().optional(),
+  /** Shown to merchants after infra failures; optional. */
+  MERCHANT_SUPPORT_EMAIL: z.string().email().optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

@@ -18,7 +18,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@disclo/core": "workspace:*"
+    "@disclo/core": "workspace:*",
+    "@disclo/db": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

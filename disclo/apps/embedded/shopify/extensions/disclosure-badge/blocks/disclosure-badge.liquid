@@ -1,21 +1,62 @@
 {% comment %}
-  App block: renders AI disclosure / substantiated green claim badges from product metafields.
-  Wire namespace `eu_ai_compliance` and keys from the Shopify adapter (AD-03).
+  App block: AI Act Compliance + green-claims verification from product metafields (AD-03 / AD-05).
+  Namespace `eu_ai_compliance` — keys written by `createShopifyAdapter` / future claims flows.
 {% endcomment %}
 <div class="disclo-badge" {{ block.shopify_attributes }}>
-  {% if product.metafields.eu_ai_compliance.ai_content_disclosure %}
+  {% if block.settings.show_ai_disclosure
+    and product.metafields.eu_ai_compliance.ai_content_disclosure != blank
+  %}
     <p class="disclo-badge__text">
       {{ product.metafields.eu_ai_compliance.ai_content_disclosure }}
     </p>
-  {% else %}
-    <p class="disclo-badge__text disclo-badge__text--muted">Disclo: no disclosure label on this product.</p>
+  {% endif %}
+
+  {% if block.settings.show_green_badge
+    and product.metafields.eu_ai_compliance.green_claim_verified != blank
+  %}
+    <p class="disclo-badge__green" data-disclo-green-badge>
+      {{ product.metafields.eu_ai_compliance.green_claim_verified }}
+    </p>
+  {% endif %}
+
+  {% if block.settings.show_empty_hint
+    and product.metafields.eu_ai_compliance.ai_content_disclosure == blank
+  %}
+    <p class="disclo-badge__text disclo-badge__text--muted">
+      {{ block.settings.empty_hint }}
+    </p>
   {% endif %}
 </div>
 
 {% schema %}
 {
-  "name": "Disclo disclosure",
+  "name": "Disclo AI Act Compliance",
   "target": "section",
-  "settings": []
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_ai_disclosure",
+      "label": "Show AI disclosure label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_green_badge",
+      "label": "Show green claim verification",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_empty_hint",
+      "label": "Show placeholder when no AI disclosure",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "empty_hint",
+      "label": "Placeholder text",
+      "default": "No disclosure label on this product yet."
+    }
+  ]
 }
 {% endschema %}

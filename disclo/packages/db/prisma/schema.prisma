@@ -8,8 +8,8 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // Migrations use this when set (required when `url` is a PgBouncer / transaction pooler URL).
-  directUrl = env("DIRECT_URL")
+  // Use DATABASE_URL for migrations when DIRECT_URL is unavailable in local app envs.
+  directUrl = env("DATABASE_URL")
 }
 
 // --- Shopify App session storage (Prisma session storage adapter) ---

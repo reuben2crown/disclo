@@ -1,5 +1,10 @@
 import type { Platform, PlatformAdapter } from "@disclo/core";
-import { createShopifyAdapter } from "./shopify/index.js";
+export type { ShopifyAdapterDeps } from "./shopify/types.js";
+export {
+  createShopifyAdapter,
+  SHOPIFY_DEFAULT_API_VERSION,
+  type ShopifyAdapter,
+} from "./shopify/index.js";
 import { createAdapter as createWoocommerceAdapter } from "./woocommerce/index.js";
 import { createAdapter as createWordpressAdapter } from "./wordpress/index.js";
 import { createAdapter as createHeadlessAdapter } from "./headless/index.js";
@@ -11,7 +16,9 @@ import { createAdapter as createGhostAdapter } from "./ghost/index.js";
 export function getAdapter(platform: Platform): PlatformAdapter {
   switch (platform) {
     case "shopify":
-      return createShopifyAdapter();
+      throw new Error(
+        "Shopify uses createShopifyAdapter({ prisma, encryptionKey }) from @disclo/adapters; getAdapter does not apply",
+      );
     case "woocommerce":
       return createWoocommerceAdapter();
     case "wordpress":

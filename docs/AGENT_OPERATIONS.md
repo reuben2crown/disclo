@@ -8,6 +8,22 @@ This matches **Phase 8** and the **agent roster** in `.cursor/plans/disclo_autho
 - **Parallel work** is easiest when you use **separate Cursor chats** (or teammates) for **different epics**, with shared contracts (`PlatformAdapter`, config, Prisma schema).
 - **Cursor “agents”** here means: **prompt + rules + commands** that put the model into a consistent role. Linear remains the **system of record** for what to do next.
 
+### Sprint 1 parallel deployment (five chats at once)
+
+Open **five Composer/Agent chats** at the same time. In each chat, run **one** slash command, then paste the **Linear issue id** and **allowed paths** so edits never collide:
+
+| Chat | Command | Owns (do not edit outside this) |
+| --- | --- | --- |
+| 1 | `/agent-backend` | `disclo/packages/core`, `disclo/workers` (core + workers only) |
+| 2 | `/agent-api-integrations` + `/agent-shopify-ui` | `disclo/packages/adapters`, `disclo/apps/embedded/shopify` |
+| 3 | `/agent-sec-comp` | `docs/security/*`, webhook/auth threat alignment; call `/security-review` when scope grows |
+| 4 | `/agent-qa` | `docs/QA_TRACEABILITY.md`, test IDs, E2E notes |
+| 5 | `/agent-infra` | CI, Railway, Supabase/Redis wiring, `disclo/infra`, workflows |
+
+**Rules:** one **active** Linear issue per chat until merged (or hand off in `docs/SESSION.md`). Same branch `dev`; small PRs per epic. Full playbook also lives in `c:\Users\samue\.cursor\plans\sprint_1_agent_deployment_cf27b189.plan.md`.
+
+A **single** chat can still ship a **large batch** of core tickets in one pass (e.g. BE-06 through BE-09) when you explicitly ask for that scope; throughput is a prompt/scope choice, not a one-ticket-at-a-time rule.
+
 ## Roles (maps to Linear epics)
 
 

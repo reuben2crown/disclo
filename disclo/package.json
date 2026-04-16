@@ -26,5 +26,14 @@
     "turbo": "^2.3.3",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@graphql-tools/url-loader": "8.0.16",
+      "@graphql-codegen/client-preset": "4.7.0",
+      "@graphql-codegen/typescript-operations": "4.5.0",
+      "minimatch": "9.0.5",
+      "vite": "^6.2.2"
+    }
   }
 }

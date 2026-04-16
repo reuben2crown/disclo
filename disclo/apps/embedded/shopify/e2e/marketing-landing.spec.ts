@@ -5,6 +5,6 @@ test.describe("Marketing landing (pre-install)", () => {
     await page.goto("/");
 
     await expect(page.getByRole("heading", { level: 1, name: "Disclo" })).toBeVisible();
-    await expect(page.getByText(/AI disclosure/i)).toBeVisible();
+    await expect(page.getByText(/AI Act Compliance/i)).toBeVisible();
   });
 });

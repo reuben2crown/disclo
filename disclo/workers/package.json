@@ -8,19 +8,22 @@
     "lint": "eslint .",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit",
-    "start:scan": "node dist/scan-orchestrator.js",
-    "start:text": "node dist/text-classifier.js",
-    "start:image": "node dist/image-classifier.js",
-    "start:claims": "node dist/claims-checker.js",
-    "start:report": "node dist/report-generator.js",
-    "start:evidence": "node dist/evidence-verifier.js",
-    "start:auto-scan": "node dist/auto-scan.js",
-    "smoke:bullmq": "tsx bullmq-smoke.ts"
+    "start": "node dist/main.js",
+    "start:scan": "node dist/scan/scan-orchestrator-worker.js",
+    "start:text": "node dist/classify/text-classifier-worker.js",
+    "start:image": "node dist/classify/image-classifier-worker.js",
+    "start:claims": "node dist/classify/claims-checker-worker.js",
+    "start:report": "node dist/reports/report-generator-worker.js",
+    "start:evidence": "node dist/evidence/evidence-verifier-worker.js",
+    "start:auto-scan": "node dist/maintenance/auto-scan-worker.js",
+    "smoke:bullmq": "tsx src/smoke/bullmq-smoke.ts"
   },
   "dependencies": {
     "@disclo/core": "workspace:*",
     "@disclo/db": "workspace:*",
-    "bullmq": "^5.34.0"
+    "@prisma/client": "^6.2.1",
+    "bullmq": "^5.34.0",
+    "ioredis": "^5.8.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

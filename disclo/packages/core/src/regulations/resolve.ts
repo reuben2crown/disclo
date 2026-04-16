@@ -1,4 +1,4 @@
-import type { RegulationConfig } from "../types.js";
+import type { RegulationConfig } from "../models/types.js";
 import { REGULATION_CONFIGS } from "./configs.js";
 
 /**

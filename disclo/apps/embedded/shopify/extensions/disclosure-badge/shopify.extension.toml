@@ -2,6 +2,9 @@
 api_version = "2025-07"
 
 [[extensions]]
+
+uid = "4b2a4595-a0e6-733e-d3c2-4bd049ac001fe457dfdb"
+
 type = "theme"
 name = "disclosure-badge"
 handle = "disclosure-badge"

@@ -257,15 +257,16 @@ disclo/                               ← monorepo root
 │       └── headless/                 ← no-op fetcher and labeller
 │
 ├── workers/
-│   ├── scan-orchestrator.ts
-│   ├── text-classifier.ts
-│   ├── image-classifier.ts
-│   ├── claims-checker.ts
-│   ├── report-generator.ts
-│   ├── evidence-verifier.ts          ← Re-verifies certifications on schedule
-│   ├── notification-dispatcher.ts
-│   ├── webhook-retry.ts
-│   └── quota-sync.ts                 ← Nightly Redis → Postgres quota sync
+│   └── src/
+│       ├── main.ts                   ← boots all BullMQ workers
+│       ├── lib/worker-connection.ts
+│       ├── scan/scan-orchestrator-worker.ts
+│       ├── classify/               ← text-, image-, claims-*-worker.ts
+│       ├── reports/report-generator-worker.ts
+│       ├── evidence/evidence-verifier-worker.ts  ← re-verifies certifications on schedule
+│       ├── maintenance/auto-scan-worker.ts
+│       ├── smoke/bullmq-smoke.ts
+│       └── (future) notification-dispatcher-worker.ts, webhook-retry-worker.ts, quota-sync-worker.ts
 │
 ├── plugins/
 │   └── wordpress/                    ← PHP plugin (bridges WP/WC to SaaS)
@@ -922,7 +923,7 @@ const score = Math.round(100 - (weightedPenalty / (items.length * 3)) * 100);
 // 100 = fully compliant, 0 = every item is high-risk
 ```
 
-### 7.5 Audit Log (`packages/core/src/audit/log.ts`)
+### 7.5 Audit Log (`packages/core/src/audit/append.ts`, `exemption.ts`)
 
 Write-only at MVP. Records every compliance action with: action type, reviewer name (required for `human_reviewed`), SHA-256 content hash, timestamp, user ID.
 
@@ -1134,7 +1135,7 @@ When a claim is flagged:
 
 ### 10.6 Evidence verification (background worker)
 
-`workers/evidence-verifier.ts` runs daily. For each `evidence_items` row where `next_verification_at <= now()`:
+`workers/src/evidence/evidence-verifier-worker.ts` runs daily. For each `evidence_items` row where `next_verification_at <= now()`:
 
 1. Load `certification_registry_configs` for the item's `certification_body`
 2. Execute lookup (API call or URL check)
@@ -1416,11 +1417,11 @@ The two-layer architecture means scaling follows a predictable pattern:
 | Turborepo monorepo scaffold                                 | All packages                            |
 | PostgreSQL schema + Prisma                                  | `packages/db`                           |
 | Core types (ScanRequest, LabelInstruction, PlatformAdapter) | `packages/core/src/types.ts`            |
-| GPTZero text classifier                                     | `packages/core/src/classifiers/text.ts` |
+| GPTZero text classifier                                     | `packages/core/src/classifiers/text-classifier.ts` |
 | Risk scorer                                                 | `packages/core/src/risk/`               |
-| Audit log (write-only)                                      | `packages/core/src/audit/log.ts`        |
+| Audit log (write-only)                                      | `packages/core/src/audit/`              |
 | Plan resolver + enforcement middleware                      | `packages/core/src/plans/`              |
-| Scan orchestrator (BullMQ)                                  | `workers/scan-orchestrator.ts`          |
+| Scan orchestrator (BullMQ)                                  | `workers/src/scan/scan-orchestrator-worker.ts` |
 | Shopify adapter (auth, fetcher, labeller, webhooks)         | `packages/adapters/shopify/`            |
 | Shopify embedded dashboard (MVP screens)                    | `apps/embedded/shopify/`                |
 | Notification system (in-app + basic email)                  | `packages/core/src/notifications/`      |
@@ -1452,11 +1453,11 @@ The two-layer architecture means scaling follows a predictable pattern:
 | -------------------------------------------- | -------------------------------------------------- |
 | Rewrite engine (Claude API)                  | `packages/core/src/rewrite/`                       |
 | Green claims LLM substantiation (Claude API) | `packages/core/src/classifiers/claims.ts` (Pass 2) |
-| Monthly auto-scan (BullMQ repeat jobs)       | `workers/scan-orchestrator.ts`                     |
+| Monthly auto-scan (BullMQ repeat jobs)       | `workers/src/maintenance/auto-scan-worker.ts`     |
 | Audit log PDF export                         | `packages/core/src/audit/`                         |
 | Compliance score trending                    | `apps/embedded/shopify/`                           |
 | Pro + Agency plan activation                 | `packages/db/prisma/seed.ts`                       |
-| Evidence verifier worker                     | `workers/evidence-verifier.ts`                     |
+| Evidence verifier worker                     | `workers/src/evidence/evidence-verifier-worker.ts` |
 
 
 ### Phase 4 — BigCommerce + Wix + Webflow
