@@ -40,7 +40,7 @@ export const merchantMessagesZh: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo AI 合规",
     unknownAction:
       "无法识别该请求。请刷新页面并再次保存目标市场。",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesZh: MerchantMessages = {
     regulationsHeading: "适用法规",
     regulationsHelp:
       "由目标市场推导。徽章与披露文案遵循这些规则。",
-    regAi: "AI Act 合规",
+    regAi: "AI 内容合规",
     regGreen: "绿色声明",
     marketsHeading: "目标市场",
     marketsHelp: "决定适用哪些法规。更改将在下次扫描生效。",
@@ -147,6 +147,48 @@ export const merchantMessagesZh: MerchantMessages = {
       "未找到该店铺对应的扫描。请从菜单打开「扫描」并选择最近的一次运行。",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "请使用控制台上的「开始全店扫描」按钮。若您收藏了此网址，请返回应用首页。",
@@ -182,9 +224,9 @@ export const merchantMessagesZh: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - AI 内容合规",
     tagline:
-      "为 Shopify 目录提供 AI Act 合规与绿色声明检查。请从 Shopify 后台打开应用以开始。",
+      "为 Shopify 目录提供 AI 内容合规与绿色声明检查。请从 Shopify 后台打开应用以开始。",
     shopExample: "示例：your-store.myshopify.com",
     bulletScans:
       "扫描：目录在一次流程中经过文本、图片与绿色声明检查。",
@@ -199,7 +241,7 @@ export const merchantMessagesZh: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "控制台",
+    dashboard: "Disclo AI 合规",
     scans: "扫描",
     settings: "设置",
   },

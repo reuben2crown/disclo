@@ -40,7 +40,7 @@ export const merchantMessagesDa: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo AI-overholdelse",
     unknownAction:
       "Den handling blev ikke genkendt. Genindlæs siden, og gem målmarkeder igen.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesDa: MerchantMessages = {
     regulationsHeading: "Gældende regler",
     regulationsHelp:
       "Udledt af målmarkeder. Badge og oplysningstekster følger disse regler.",
-    regAi: "AI Act-overholdelse",
+    regAi: "Overholdelse af AI-indhold",
     regGreen: "Miljøpåstande",
     marketsHeading: "Målmarkeder",
     marketsHelp: "Styrer hvilke regler der gælder. Ændringer gælder næste scanning.",
@@ -147,6 +147,48 @@ export const merchantMessagesDa: MerchantMessages = {
       "Vi fandt ikke den scanning for denne butik. Åbn Scanninger i menuen, og vælg et nyligt kørsel.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Brug knappen Start fuld scanning på dashboardet. Har du gemt denne URL som bogmærke, så gå tilbage til appens startside.",
@@ -182,9 +224,9 @@ export const merchantMessagesDa: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Overholdelse af AI-indhold",
     tagline:
-      "AI Act-overholdelse og kontrol af miljøpåstande for dit Shopify-katalog. Åbn appen fra Shopify-admin for at komme i gang.",
+      "Overholdelse af AI-indhold og kontrol af miljøpåstande for dit Shopify-katalog. Åbn appen fra Shopify-admin for at komme i gang.",
     shopExample: "Eksempel: din-butik.myshopify.com",
     bulletScans:
       "Scanninger: kataloget gennemgår tekst-, billede- og miljøpåstandstjek i ét forløb.",
@@ -199,7 +241,7 @@ export const merchantMessagesDa: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "Dashboard",
+    dashboard: "Disclo AI-overholdelse",
     scans: "Scanninger",
     settings: "Indstillinger",
   },

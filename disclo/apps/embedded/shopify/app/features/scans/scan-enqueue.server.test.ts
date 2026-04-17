@@ -31,10 +31,7 @@ vi.mock("@disclo/core", async (importOriginal) => {
 });
 
 import { PlanError, requireFeature } from "@disclo/core";
-import {
-  enqueueFullShopScan,
-  enqueueProductIncrementalScan,
-} from "./scan-enqueue.server.js";
+import { enqueueFullShopScan, enqueueProductIncrementalScan } from "./scan-enqueue.server";
 
 describe("enqueueFullShopScan", () => {
   const shopDomain = "s.myshopify.com";

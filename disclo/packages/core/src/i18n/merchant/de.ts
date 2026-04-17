@@ -40,7 +40,7 @@ export const merchantMessagesDe: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo KI-Compliance",
     unknownAction:
       "Diese Aktion wurde nicht erkannt. Laden Sie die Seite neu und speichern Sie die Zielmärkte erneut.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesDe: MerchantMessages = {
     regulationsHeading: "Geltende Vorschriften",
     regulationsHelp:
       "Abgeleitet von den Zielmärkten. Badge und Hinweistexte folgen diesen Regeln.",
-    regAi: "KI-Act-Compliance",
+    regAi: "Compliance für KI-Inhalte",
     regGreen: "Umweltclaims",
     marketsHeading: "Zielmärkte",
     marketsHelp: "Legt fest, welche Vorschriften gelten. Änderungen gelten für den nächsten Scan.",
@@ -147,6 +147,48 @@ export const merchantMessagesDe: MerchantMessages = {
       "Wir haben diesen Scan für diesen Shop nicht gefunden. Öffnen Sie Scans im Menü und wählen Sie einen aktuellen Lauf.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Nutzen Sie die Schaltfläche Vollständigen Scan starten im Dashboard. Wenn Sie diese URL gespeichert haben, gehen Sie zur App-Startseite zurück.",
@@ -182,9 +224,9 @@ export const merchantMessagesDe: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Compliance für KI-Inhalte",
     tagline:
-      "KI-Act-Compliance und Prüfung von Umweltclaims für Ihren Shopify-Katalog. Öffnen Sie die App im Shopify-Admin, um zu starten.",
+      "Compliance für KI-Inhalte und Prüfung von Umweltclaims für Ihren Shopify-Katalog. Öffnen Sie die App im Shopify-Admin, um zu starten.",
     shopExample: "Beispiel: ihr-shop.myshopify.com",
     bulletScans:
       "Scans: Katalog durchläuft Text-, Bild- und Umweltclaims-Prüfung in einem Ablauf.",
@@ -199,7 +241,7 @@ export const merchantMessagesDe: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "Dashboard",
+    dashboard: "Disclo KI-Compliance",
     scans: "Scans",
     settings: "Einstellungen",
   },

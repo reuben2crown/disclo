@@ -40,7 +40,7 @@ export const merchantMessagesEn = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo AI Compliance",
     unknownAction:
       "That request was not recognized. Reload the page, then save target markets again.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesEn = {
     regulationsHeading: "Applicable regulations",
     regulationsHelp:
       "Derived from target markets. Badge and disclosure copy follow these rules.",
-    regAi: "AI Act Compliance",
+    regAi: "AI Content Compliance",
     regGreen: "Green claims",
     marketsHeading: "Target markets",
     marketsHelp: "Picks which regulations apply. Changes apply to the next scan.",
@@ -118,7 +118,7 @@ export const merchantMessagesEn = {
     emptyDescription:
       "Run a full scan from the dashboard, or clear the regulation filter if one is set.",
     footnote:
-      "Per-item labels and reviewer actions are coming soon. Open a scan row to see progress and scores for that run.",
+      "Open a scan row for live progress. When the run finishes, open a product from the list to review details and apply labels.",
     openDashboard: "Open dashboard",
   },
 
@@ -145,6 +145,47 @@ export const merchantMessagesEn = {
     invalidLink: "That scan link is invalid.",
     scanNotFound:
       "We couldn't find that scan for this shop. Open Scans from the menu and pick a recent run.",
+  },
+
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
   },
 
   scanAction: {
@@ -182,9 +223,9 @@ export const merchantMessagesEn = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - AI Content Compliance",
     tagline:
-      "AI Act Compliance and Green-claims checks for your Shopify catalog. Open the app from Shopify admin to get started.",
+      "AI Content Compliance and green-claims checks for your Shopify catalog. Open the app from Shopify admin to get started.",
     shopExample: "Example: your-store.myshopify.com",
     bulletScans:
       "Scans: run your catalog through text, image, and green-claims checks in one flow.",
@@ -197,7 +238,7 @@ export const merchantMessagesEn = {
   hints: merchantHintsEn,
 
   nav: {
-    dashboard: "Dashboard",
+    dashboard: "Disclo AI Compliance",
     scans: "Scans",
     settings: "Settings",
   },

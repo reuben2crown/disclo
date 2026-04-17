@@ -40,7 +40,7 @@ export const merchantMessagesIt: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo conformità IA",
     unknownAction:
       "Richiesta non riconosciuta. Ricarica la pagina e salva di nuovo i mercati di destinazione.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesIt: MerchantMessages = {
     regulationsHeading: "Normative applicabili",
     regulationsHelp:
       "Derivate dai mercati di destinazione. Badge e testi informativi seguono queste regole.",
-    regAi: "Conformità all'AI Act",
+    regAi: "Conformità dei contenuti IA",
     regGreen: "Claim ambientali",
     marketsHeading: "Mercati di destinazione",
     marketsHelp: "Definisce quali normative si applicano. Le modifiche valgono per la prossima scansione.",
@@ -147,6 +147,48 @@ export const merchantMessagesIt: MerchantMessages = {
       "Non abbiamo trovato quella scansione per questo negozio. Apri Scansioni dal menu e scegli un’esecuzione recente.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Usa il pulsante Avvia scansione completa nella dashboard. Se hai salvato questa URL nei preferiti, torna alla home dell’app.",
@@ -182,9 +224,9 @@ export const merchantMessagesIt: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Conformità dei contenuti IA",
     tagline:
-      "Conformità all'AI Act e verifica dei claim ambientali per il catalogo Shopify. Apri l’app dall’admin Shopify per iniziare.",
+      "Conformità dei contenuti IA e verifica dei claim ambientali per il catalogo Shopify. Apri l’app dall’admin Shopify per iniziare.",
     shopExample: "Esempio: il-tuo-negozio.myshopify.com",
     bulletScans:
       "Scansioni: il catalogo passa da controlli su testo, immagine e claim ambientali in un flusso unico.",
@@ -199,7 +241,7 @@ export const merchantMessagesIt: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "Dashboard",
+    dashboard: "Disclo conformità IA",
     scans: "Scansioni",
     settings: "Impostazioni",
   },

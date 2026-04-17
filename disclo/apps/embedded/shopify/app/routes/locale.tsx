@@ -6,7 +6,7 @@ import {
   isSupportedLocale,
   type SupportedLocale,
 } from "@disclo/core/i18n";
-import { safeLocaleReturnTo } from "../locale-action.server.js";
+import { safeLocaleReturnTo } from "../locales/locale-action.server.js";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);

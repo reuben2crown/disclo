@@ -40,7 +40,7 @@ export const merchantMessagesTr: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo yapay zeka uyumu",
     unknownAction:
       "Bu istek tanınmadı. Sayfayı yenileyin, hedef pazarları yeniden kaydedin.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesTr: MerchantMessages = {
     regulationsHeading: "Uygulanan düzenlemeler",
     regulationsHelp:
       "Hedef pazarlardan türetilir. Rozet ve açıklama metinleri bu kurallara uyar.",
-    regAi: "AI Act uyumluluğu",
+    regAi: "Yapay zeka içerik uyumluluğu",
     regGreen: "Çevre iddiaları",
     marketsHeading: "Hedef pazarlar",
     marketsHelp: "Hangi düzenlemelerin geçerli olduğunu belirler. Değişiklikler sonraki taramaya uygulanır.",
@@ -147,6 +147,48 @@ export const merchantMessagesTr: MerchantMessages = {
       "Bu mağaza için o taramayı bulamadık. Menüden Taramalar'ı açın ve yakın bir çalıştırma seçin.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Panodaki Tam taramayı başlat düğmesini kullanın. Bu URL'yi yer imi yaptıysanız uygulama ana sayfasına dönün.",
@@ -182,9 +224,9 @@ export const merchantMessagesTr: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Yapay zeka içerik uyumluluğu",
     tagline:
-      "Shopify kataloğunuz için AI Act uyumluluğu ve çevre iddiası kontrolleri. Başlamak için uygulamayı Shopify yöneticisinden açın.",
+      "Shopify kataloğunuz için yapay zeka içerik uyumluluğu ve çevre iddiası kontrolleri. Başlamak için uygulamayı Shopify yöneticisinden açın.",
     shopExample: "Örnek: magazaniz.myshopify.com",
     bulletScans:
       "Taramalar: kataloğunuz tek akışta metin, görsel ve çevre iddiası kontrollerinden geçer.",
@@ -199,7 +241,7 @@ export const merchantMessagesTr: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "Pano",
+    dashboard: "Disclo yapay zeka uyumu",
     scans: "Taramalar",
     settings: "Ayarlar",
   },

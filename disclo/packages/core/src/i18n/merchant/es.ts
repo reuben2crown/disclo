@@ -40,7 +40,7 @@ export const merchantMessagesEs: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo cumplimiento IA",
     unknownAction:
       "No reconocimos esa acción. Recarga la página y vuelve a guardar los mercados objetivo.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesEs: MerchantMessages = {
     regulationsHeading: "Normativa aplicable",
     regulationsHelp:
       "Se deriva de los mercados objetivo. La insignia y los textos de divulgación siguen estas normas.",
-    regAi: "Cumplimiento del AI Act",
+    regAi: "Cumplimiento del contenido con IA",
     regGreen: "Afirmaciones ambientales",
     marketsHeading: "Mercados objetivo",
     marketsHelp: "Define qué normas aplican. Los cambios valen para el siguiente análisis.",
@@ -147,6 +147,48 @@ export const merchantMessagesEs: MerchantMessages = {
       "No encontramos ese análisis para esta tienda. Abre Análisis en el menú y elige una ejecución reciente.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Usa el botón Iniciar análisis completo en el panel. Si guardaste esta URL en favoritos, vuelve al inicio de la app.",
@@ -182,9 +224,9 @@ export const merchantMessagesEs: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Cumplimiento del contenido con IA",
     tagline:
-      "Cumplimiento del AI Act y comprobación de afirmaciones ambientales para tu catálogo Shopify. Abre la app desde el admin de Shopify para empezar.",
+      "Cumplimiento del contenido con IA y comprobación de afirmaciones ambientales para tu catálogo Shopify. Abre la app desde el admin de Shopify para empezar.",
     shopExample: "Ejemplo: tu-tienda.myshopify.com",
     bulletScans:
       "Análisis: pasa tu catálogo por texto, imagen y afirmaciones ambientales en un solo flujo.",
@@ -199,7 +241,7 @@ export const merchantMessagesEs: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "Panel",
+    dashboard: "Disclo cumplimiento IA",
     scans: "Análisis",
     settings: "Ajustes",
   },

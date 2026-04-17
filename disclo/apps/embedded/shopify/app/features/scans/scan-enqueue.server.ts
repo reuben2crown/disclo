@@ -26,7 +26,7 @@ import {
   merchantShopMissingError,
   merchantUnexpectedFullScanError,
   merchantUnexpectedIncrementalError,
-} from "./scan-enqueue-messages.server.js";
+} from "./scan-enqueue-messages.server";
 
 export type EnqueueScanResult =
   | { ok: true; scanId: string }

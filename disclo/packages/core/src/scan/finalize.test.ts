@@ -39,6 +39,38 @@ describe("finalizeScanIfComplete", () => {
     expect(riskScore).toBeLessThanOrEqual(100);
   });
 
+  it("treats labelled items as processed for completion", async () => {
+    const update = vi.fn();
+    const findUnique = vi.fn().mockResolvedValue({
+      id: "scan1",
+      totalItems: 2,
+      scanItems: [
+        {
+          status: "labelled",
+          riskLevel: "review",
+          regulations: ["eu_ai_act_art50"],
+        },
+        {
+          status: "classified",
+          riskLevel: "none",
+          regulations: ["eu_ai_act_art50"],
+        },
+      ],
+    });
+    const prisma = {
+      scan: { findUnique, update },
+    } as unknown as PrismaClient;
+
+    await finalizeScanIfComplete(prisma, "scan1");
+
+    expect(update).toHaveBeenCalledWith({
+      where: { id: "scan1" },
+      data: expect.objectContaining({
+        status: "completed",
+      }),
+    });
+  });
+
   it("completes with score 100 when all items are exempted", async () => {
     const update = vi.fn();
     const findUnique = vi.fn().mockResolvedValue({

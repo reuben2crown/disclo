@@ -1,10 +1,10 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "429127983d11fa636adacae6693bbd12"
-name = "Disclo - AI Act Compliance"
+name = "Disclo"
 application_url = "https://example.com"
 embedded = true
-`                   
+
 [build]
 automatically_update_urls_on_dev = true
 include_config_on_deploy = true
@@ -13,12 +13,16 @@ include_config_on_deploy = true
 api_version = "2026-04"
 
   [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
-
-  [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]
   uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app_subscriptions/update" ]
+  uri = "/webhooks/app/subscriptions_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
 
   [[webhooks.subscriptions]]
   topics = [ "products/create" ]
@@ -28,13 +32,9 @@ api_version = "2026-04"
   topics = [ "products/update" ]
   uri = "/webhooks/products/update"
 
-  [[webhooks.subscriptions]]
-  topics = [ "app_subscriptions/update" ]
-  uri = "/webhooks/app/subscriptions_update"
-
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products,write_products"
+scopes = "write_products"
 
 [auth]
 redirect_urls = [ "https://example.com/api/auth" ]

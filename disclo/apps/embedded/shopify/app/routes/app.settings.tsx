@@ -12,8 +12,8 @@ import { useState } from "react";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { LanguageSwitcherFooter } from "../components/LanguageSwitcherFooter.js";
-import type { AppI18nOutletContext } from "../i18n-outlet-context.js";
-import { discloLocaleCookieChoice } from "../i18n.server.js";
+import type { AppI18nOutletContext } from "../locales/i18n-outlet-context.js";
+import { discloLocaleCookieChoice } from "../locales/i18n.server.js";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

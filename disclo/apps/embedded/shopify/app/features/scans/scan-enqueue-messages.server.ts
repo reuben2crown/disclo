@@ -1,5 +1,5 @@
 import { getMerchantMessages, type SupportedLocale } from "@disclo/core/i18n";
-import { merchantSupportSuffix } from "./merchant-support.server.js";
+import { merchantSupportSuffix } from "../dashboard/merchant-support.server.js";
 
 function withDevHelp(body: string, locale: SupportedLocale): string {
   return `${body} ${merchantSupportSuffix(locale)}`;

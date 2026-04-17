@@ -10,16 +10,18 @@ import {
   BlockStack,
   Button,
   Card,
+  InlineStack,
   Page,
   ProgressBar,
   Text,
 } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { getMerchantMessages } from "@disclo/core/i18n";
-import type { AppI18nOutletContext } from "../i18n-outlet-context.js";
-import { localeFromRequest } from "../i18n.server.js";
+import type { AppI18nOutletContext } from "../locales/i18n-outlet-context.js";
+import { localeFromRequest } from "../locales/i18n.server.js";
 import prisma from "../db.server";
-import { getScanProgressSnapshot } from "../scan-progress.server";
+import { listScanItemsForTenantScan } from "../features/scans/scan-item-detail.server.js";
+import { getScanProgressSnapshot } from "../features/scans/scan-progress.server";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -37,12 +39,16 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!progress) {
     throw new Response(m.scanProgress.scanNotFound, { status: 404 });
   }
-  return { progress };
+
+  const items =
+    (await listScanItemsForTenantScan(prisma, session.shop, scanId)) ?? [];
+
+  return { progress, items };
 };
 
 export default function ScanProgressPage() {
   const { m } = useOutletContext<AppI18nOutletContext>();
-  const { progress } = useLoaderData<typeof loader>();
+  const { progress, items } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
 
   const isRunning =
@@ -137,6 +143,43 @@ export default function ScanProgressPage() {
                 </Text>
                 <ProgressBar progress={stageProgress} tone="highlight" />
               </BlockStack>
+            </BlockStack>
+          </BlockStack>
+        </Card>
+
+        <Card>
+          <BlockStack gap="300">
+            <Text as="h2" variant="headingMd">
+              {m.scanItemDetail.itemsHeading}
+            </Text>
+            <Text as="p" variant="bodySm" tone="subdued">
+              {m.scanItemDetail.itemsIntro}
+            </Text>
+            <BlockStack gap="200">
+              {items.map((row) => (
+                <InlineStack
+                  key={row.id}
+                  align="space-between"
+                  blockAlign="center"
+                  wrap={false}
+                >
+                  <BlockStack gap="050">
+                    <Text as="p" variant="bodyMd" fontWeight="semibold">
+                      {m.scanItemDetail.productId(row.contentId)}
+                    </Text>
+                    <Text as="p" variant="bodySm" tone="subdued">
+                      {m.scanItemDetail.riskLevel}: {row.riskLevel} ·{" "}
+                      {m.scanItemDetail.status}: {row.status}
+                    </Text>
+                  </BlockStack>
+                  <Button
+                    url={`/app/scans/${progress.id}/items/${row.id}`}
+                    variant="plain"
+                  >
+                    {m.scanItemDetail.viewItem}
+                  </Button>
+                </InlineStack>
+              ))}
             </BlockStack>
           </BlockStack>
         </Card>

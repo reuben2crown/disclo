@@ -1,11 +1,14 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { defaultLocaleFromEnv } from "../i18n.server.js";
-import prisma from "../db.server";
-import { enqueueProductIncrementalScan } from "../scan-enqueue.server";
-import { authenticate } from "../shopify.server";
-import { numericProductIdFromWebhookPayload } from "../webhook-product-payload.server";
+import { defaultLocaleFromEnv } from "../../locales/i18n.server";
+import prisma from "../../db.server";
+import { enqueueProductIncrementalScan } from "../../features/scans/scan-enqueue.server";
+import { authenticate } from "../../shopify.server";
+import { numericProductIdFromWebhookPayload } from "../../features/webhooks/webhook-product-payload.server";
 
-/** AD-04: PRODUCTS_UPDATE */
+/**
+ * AD-04: PRODUCTS_CREATE — HMAC-verified by `authenticate.webhook`.
+ * Enqueues an incremental product scan when `autoScanOnUpdate` is on.
+ */
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, payload } = await authenticate.webhook(request);
   const productId = numericProductIdFromWebhookPayload(payload);
@@ -33,6 +36,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return new Response();
 };
 
-export default function ProductsUpdateWebhook() {
+export default function ProductsCreateWebhook() {
   return null;
 }

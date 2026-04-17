@@ -15,7 +15,7 @@ import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 
 import { getMerchantMessages } from "@disclo/core/i18n";
 import { LanguageSwitcherFooter } from "../../components/LanguageSwitcherFooter.js";
-import { discloLocaleCookieChoice, localeFromRequest } from "../../i18n.server.js";
+import { discloLocaleCookieChoice, localeFromRequest } from "../../locales/i18n.server.js";
 import { login } from "../../shopify.server";
 
 import { loginErrorMessage } from "./error.server";

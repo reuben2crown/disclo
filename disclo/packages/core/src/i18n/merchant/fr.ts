@@ -41,7 +41,7 @@ export const merchantMessagesFr: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo conformité IA",
     unknownAction:
       "Cette action n’a pas été reconnue. Rechargez la page, puis enregistrez à nouveau les marchés cibles.",
     shopMissingMarkets:
@@ -80,7 +80,7 @@ export const merchantMessagesFr: MerchantMessages = {
     regulationsHeading: "Réglementations applicables",
     regulationsHelp:
       "Dérivées des marchés cibles. Le badge et les textes de divulgation suivent ces règles.",
-    regAi: "Conformité AI Act",
+    regAi: "Conformité des contenus IA",
     regGreen: "Allégations environnementales",
     marketsHeading: "Marchés cibles",
     marketsHelp:
@@ -149,6 +149,48 @@ export const merchantMessagesFr: MerchantMessages = {
       "Nous n’avons pas trouvé cette analyse pour cette boutique. Ouvrez Analyses dans le menu et choisissez une exécution récente.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Utilisez le bouton « Lancer une analyse complète » sur le tableau de bord. Si vous avez mis cette URL en favori, revenez à l’accueil de l’application.",
@@ -184,9 +226,9 @@ export const merchantMessagesFr: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Conformité des contenus IA",
     tagline:
-      "Conformité AI Act et contrôle des allégations environnementales pour votre catalogue Shopify. Ouvrez l’application depuis l’admin Shopify pour commencer.",
+      "Conformité des contenus IA et contrôle des allégations environnementales pour votre catalogue Shopify. Ouvrez l’application depuis l’admin Shopify pour commencer.",
     shopExample: "Exemple : votre-boutique.myshopify.com",
     bulletScans:
       "Analyses : faites passer votre catalogue par les contrôles texte, image et allégations vertes en un flux.",
@@ -199,7 +241,7 @@ export const merchantMessagesFr: MerchantMessages = {
   hints: merchantHintsFr,
 
   nav: {
-    dashboard: "Tableau de bord",
+    dashboard: "Disclo conformité IA",
     scans: "Analyses",
     settings: "Paramètres",
   },

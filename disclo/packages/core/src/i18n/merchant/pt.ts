@@ -40,7 +40,7 @@ export const merchantMessagesPt: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo conformidade IA",
     unknownAction:
       "Não reconhecemos esse pedido. Recarregue a página e guarde de novo os mercados alvo.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesPt: MerchantMessages = {
     regulationsHeading: "Regulamentos aplicáveis",
     regulationsHelp:
       "Derivados dos mercados alvo. O distintivo e os textos de divulgação seguem estas regras.",
-    regAi: "Conformidade com o AI Act",
+    regAi: "Conformidade de conteúdos de IA",
     regGreen: "Alegações ambientais",
     marketsHeading: "Mercados alvo",
     marketsHelp: "Define que regulamentos se aplicam. Alterações valem para a próxima análise.",
@@ -147,6 +147,48 @@ export const merchantMessagesPt: MerchantMessages = {
       "Não encontrámos essa análise para esta loja. Abra Análises no menu e escolha uma execução recente.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "Use o botão Iniciar análise completa no painel. Se guardou esta URL nos favoritos, volte ao início da app.",
@@ -182,9 +224,9 @@ export const merchantMessagesPt: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - Conformidade de conteúdos de IA",
     tagline:
-      "Conformidade com o AI Act e verificação de alegações ambientais para o seu catálogo Shopify. Abra a app a partir do admin da Shopify para começar.",
+      "Conformidade de conteúdos de IA e verificação de alegações ambientais para o seu catálogo Shopify. Abra a app a partir do admin da Shopify para começar.",
     shopExample: "Exemplo: a-sua-loja.myshopify.com",
     bulletScans:
       "Análises: o catálogo passa por texto, imagem e alegações ambientais num só fluxo.",
@@ -199,7 +241,7 @@ export const merchantMessagesPt: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "Painel",
+    dashboard: "Disclo conformidade IA",
     scans: "Análises",
     settings: "Definições",
   },

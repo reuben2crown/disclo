@@ -20,13 +20,19 @@ if (
 const host = new URL(process.env.SHOPIFY_APP_URL || "http://localhost")
   .hostname;
 
+const localHmrPort = Number(
+  process.env.VITE_HMR_PORT ??
+    process.env.SHOPIFY_VITE_HMR_PORT ??
+    64999,
+);
+
 let hmrConfig;
 if (host === "localhost") {
   hmrConfig = {
     protocol: "ws",
     host: "localhost",
-    port: 64999,
-    clientPort: 64999,
+    port: localHmrPort,
+    clientPort: localHmrPort,
   };
 } else {
   hmrConfig = {

@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { authenticate } from "../shopify.server";
+import { authenticate } from "../../shopify.server";
 
 /**
  * AD-04 / BE-21 bridge: APP_SUBSCRIPTIONS_UPDATE — sync `shops.billingId` + plan when billing is implemented.

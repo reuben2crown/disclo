@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import shopify from "../shopify.server";
+import shopify from "../../shopify.server";
 
 /**
  * App-specific webhook endpoint. Register topics in `shopify.app.toml` or via Admin API.

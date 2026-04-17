@@ -16,7 +16,11 @@ function countProcessedItems(
 ): number {
   let n = 0;
   for (const g of groups) {
-    if (g.status === "classified" || g.status === "exempted") {
+    if (
+      g.status === "classified" ||
+      g.status === "exempted" ||
+      g.status === "labelled"
+    ) {
       n += g._count;
     }
   }

@@ -6,11 +6,11 @@ import { Banner, BlockStack, Button, Card, ChoiceList, InlineGrid, List, Page, P
 import { TitleBar } from "@shopify/app-bridge-react";
 import { getMerchantMessages } from "@disclo/core/i18n";
 import prisma from "../db.server";
-import { getDashboardShopSnapshot } from "../dashboard-data.server";
-import type { AppI18nOutletContext } from "../i18n-outlet-context.js";
-import { localeFromRequest } from "../i18n.server.js";
-import { getMerchantSupportEmail } from "../merchant-support.server.js";
-import { parseTargetMarketsFromForm } from "../target-markets-form.server";
+import { getDashboardShopSnapshot } from "../features/dashboard/dashboard-data.server.js";
+import type { AppI18nOutletContext } from "../locales/i18n-outlet-context.js";
+import { localeFromRequest } from "../locales/i18n.server.js";
+import { getMerchantSupportEmail } from "../features/dashboard/merchant-support.server.js";
+import { parseTargetMarketsFromForm } from "../features/dashboard/target-markets-form.server.js";
 import { authenticate } from "../shopify.server";
 
 const MARKET_CHOICES = [

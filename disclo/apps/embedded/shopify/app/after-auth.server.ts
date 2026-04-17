@@ -1,11 +1,6 @@
 import type { Session } from "@shopify/shopify-app-remix/server";
-import {
-  encryptString,
-  getMerchantMessages,
-  loadServerEnv,
-  type SupportedLocale,
-} from "@disclo/core";
-import { merchantSupportSuffix } from "./merchant-support.server.js";
+import { encryptString, getMerchantMessages, loadServerEnv, type SupportedLocale } from "@disclo/core";
+import { merchantSupportSuffix } from "./features/dashboard/merchant-support.server.js";
 import prisma from "./db.server";
 
 /** Online session fields (optional on offline tokens). */

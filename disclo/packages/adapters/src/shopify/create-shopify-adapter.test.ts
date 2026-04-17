@@ -101,7 +101,7 @@ describe("createShopifyAdapter", () => {
       shop_id: "550e8400-e29b-41d4-a716-446655440000",
       external_id: "123",
       action: "add_label",
-      label_text: "AI Act Compliance",
+      label_text: "AI Content Compliance",
       meta_key: "eu_ai_compliance.ai_content_disclosure",
       meta_value: "",
     });

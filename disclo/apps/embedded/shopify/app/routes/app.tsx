@@ -7,8 +7,8 @@ import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { getMerchantMessages } from "@disclo/core/i18n";
 
 import { LanguageSwitcherFooter } from "../components/LanguageSwitcherFooter.js";
-import type { AppI18nOutletContext } from "../i18n-outlet-context.js";
-import { discloLocaleCookieChoice, localeFromRequest } from "../i18n.server.js";
+import type { AppI18nOutletContext } from "../locales/i18n-outlet-context.js";
+import { discloLocaleCookieChoice, localeFromRequest } from "../locales/i18n.server.js";
 import { authenticate } from "../shopify.server";
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];

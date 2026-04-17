@@ -1,8 +1,8 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getInternalHttpMessages, loadServerEnv } from "@disclo/core";
-import prisma from "./db.server.js";
-import { enqueueMonthlyAutoScansFromPlan } from "./scan-enqueue.server.js";
+import prisma from "../../db.server.js";
+import { enqueueMonthlyAutoScansFromPlan } from "./scan-enqueue.server";
 
 /**
  * BE-19: workers call this with `Authorization: Bearer ${INTERNAL_API_SECRET}`.

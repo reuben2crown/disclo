@@ -1,29 +1,13 @@
 import { useCallback, useMemo } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-  Form,
-  useLoaderData,
-  useOutletContext,
-  useSearchParams,
-} from "@remix-run/react";
-import {
-  BlockStack,
-  Button,
-  Card,
-  EmptySearchResult,
-  IndexTable,
-  INDEX_TABLE_SELECT_ALL_ITEMS,
-  InlineStack,
-  Page,
-  Text,
-  useIndexResourceState,
-} from "@shopify/polaris";
+import { Form, useLoaderData, useOutletContext, useSearchParams } from "@remix-run/react";
+import { BlockStack, Button, Card, EmptySearchResult, IndexTable, INDEX_TABLE_SELECT_ALL_ITEMS, InlineStack, Page, Text, useIndexResourceState } from "@shopify/polaris";
 import { TitleBar } from "@shopify/app-bridge-react";
 import { REGULATION_CONFIGS } from "@disclo/core/regulations";
-import type { AppI18nOutletContext } from "../i18n-outlet-context.js";
+import type { AppI18nOutletContext } from "../locales/i18n-outlet-context.js";
 import prisma from "../db.server";
-import { loadShopScansForList } from "../scans-list.server";
+import { loadShopScansForList } from "../features/scans/scans-list.server";
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -94,7 +78,7 @@ export default function ScansListPage() {
       return;
     }
     downloadCsv(
-      "disclo-scans-export.csv",
+      `disclo-scans-export-${new Date().toISOString()}.csv`,
       "scan_id",
       ids,
     );

@@ -1,9 +1,9 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { getMerchantMessages } from "@disclo/core/i18n";
-import { localeFromRequest } from "../i18n.server";
+import { localeFromRequest } from "../locales/i18n.server";
 import prisma from "../db.server";
-import { enqueueFullShopScan } from "../scan-enqueue.server";
+import { enqueueFullShopScan } from "../features/scans/scan-enqueue.server";
 import { authenticate } from "../shopify.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {

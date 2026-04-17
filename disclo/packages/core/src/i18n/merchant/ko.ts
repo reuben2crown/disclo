@@ -40,7 +40,7 @@ export const merchantMessagesKo: MerchantMessages = {
   },
 
   dashboard: {
-    titleBar: "Disclo",
+    titleBar: "Disclo AI 준수",
     unknownAction:
       "인식되지 않은 요청입니다. 페이지를 새로고침한 뒤 대상 시장을 다시 저장하세요.",
     shopMissingMarkets:
@@ -79,7 +79,7 @@ export const merchantMessagesKo: MerchantMessages = {
     regulationsHeading: "적용 규정",
     regulationsHelp:
       "대상 시장에서 도출됩니다. 배지와 고지 문구는 이 규칙을 따릅니다.",
-    regAi: "AI Act 준수",
+    regAi: "AI 생성물 준수",
     regGreen: "환경 주장",
     marketsHeading: "대상 시장",
     marketsHelp: "어떤 규정이 적용되는지 정합니다. 변경은 다음 스캔에 반영됩니다.",
@@ -147,6 +147,48 @@ export const merchantMessagesKo: MerchantMessages = {
       "이 스토어에서 해당 스캔을 찾지 못했습니다. 메뉴에서 스캔을 열고 최근 실행을 선택하세요.",
   },
 
+  scanItemDetail: {
+    titleBar: "Scan item",
+    backScan: "Back to scan",
+    productId: (id: string) => `Product ID: ${id}`,
+    fieldLabel: "Field",
+    aiProbability: "AI probability",
+    riskLevel: "Risk level",
+    status: "Status",
+    regulationsHeading: "Regulations",
+    claimsHeading: "Green claims signals",
+    noClaims: "No green-claim keywords flagged on this text.",
+    auditHeading: "Audit history",
+    noAudit: "No actions yet.",
+    previewHeading: "Product text (from Shopify)",
+    previewUnavailable:
+      "Live product text preview is unavailable. Values above still reflect your scan.",
+    applyLabel: "Apply AI disclosure label",
+    applyLabelHelp:
+      "Writes the disclosure metafield for this product. Your theme shows it when the app block is enabled.",
+    applyLabelSuccess: "Label saved to the product.",
+    itemNotFound: "We could not find that scan item.",
+    itemStillScanning:
+      "This item is still scanning. Open live progress and wait until it finishes.",
+    itemExempted:
+      "This item is marked human-reviewed. Labels are not required.",
+    noAiRegulations:
+      "No AI disclosure regulation applies to this item for your target markets. Green-claims-only items use evidence and edits instead of the storefront disclosure badge.",
+    applyLabelQueueUnavailable:
+      "We cannot apply labels right now because background services are unavailable. Wait a few minutes, then try again.",
+    applyLabelServerError:
+      "Disclo cannot write labels until server configuration is fixed. Contact whoever runs Disclo for your store.",
+    applyLabelAdapterFailed: (detail: string) =>
+      `Shopify did not accept the label update: ${detail}`,
+    applyLabelStale:
+      "This item changed in Shopify after you opened the page. Close this screen, run a fresh scan, then try again.",
+    viewItem: "View item",
+    itemsHeading: "Products in this scan",
+    itemsIntro:
+      "Open a product to see AI probability, regulations, claims signals, and audit history.",
+  },
+
+
   scanAction: {
     wrongMethod:
       "대시보드의 ‘전체 스캔 시작’ 버튼을 사용하세요. 이 URL을 북마크했다면 앱 홈으로 돌아가세요.",
@@ -182,9 +224,9 @@ export const merchantMessagesKo: MerchantMessages = {
   },
 
   marketing: {
-    heading: "Disclo",
+    heading: "Disclo - AI 생성물 준수",
     tagline:
-      "Shopify 카탈로그용 AI Act 준수와 환경 주장 검사. Shopify 관리자에서 앱을 열어 시작하세요.",
+      "Shopify 카탈로그용 AI 생성물 준수와 환경 주장 검사. Shopify 관리자에서 앱을 열어 시작하세요.",
     shopExample: "예: your-store.myshopify.com",
     bulletScans:
       "스캔: 카탈로그가 텍스트·이미지·환경 주장 검사를 한 흐름으로 통과합니다.",
@@ -199,7 +241,7 @@ export const merchantMessagesKo: MerchantMessages = {
   },
 
   nav: {
-    dashboard: "대시보드",
+    dashboard: "Disclo AI 준수",
     scans: "스캔",
     settings: "설정",
   },

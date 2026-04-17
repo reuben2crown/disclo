@@ -187,10 +187,10 @@ todos:
     status: completed
   - id: w35-fe-05
     content: "FE-05: Item detail (S4) — AI probability, risk level, regulations list, sentence breakdown, all action buttons, green claims section, audit history"
-    status: pending
+    status: completed
   - id: w35-fe-06
     content: "FE-06: Apply Label flow — one-click, multi-regulation citation, audit entry, status update, score recalculation"
-    status: pending
+    status: completed
   - id: w35-fe-07
     content: "FE-07: Mark as Human-Reviewed flow — reviewer name form, validation, audit entry, exemption"
     status: pending
@@ -533,8 +533,8 @@ Execution plan sec 4.2. Epic IDs: BE REU-29, AD REU-30, BILL REU-32, NOTIF REU-3
 **Linear epic UI / REU-31.** Execution plan sec 4.2 (Frontend).
 
 - ~~FE-04: Scan results list (S3) — filterable/sortable IndexTable, regulation filter, bulk actions~~ (`w35-fe-04`) — `/app/scans` (`app.scans._index.tsx`), `scans-list.server.ts`: regulation filter on `scan_items.regulations`, sort by `createdAt`, IndexTable + CSV export bulk action; nav **Scans**.
-- FE-05: Item detail (S4) — AI probability, risk level, regulations list, sentence breakdown, all action buttons, green claims section, audit history (`w35-fe-05`)
-- FE-06: Apply Label flow — one-click, multi-regulation citation, audit entry, status update, score recalculation (`w35-fe-06`)
+- ~~FE-05: Item detail (S4) — AI probability, risk level, regulations list, product text preview from Shopify, green claims section, audit history~~ (`w35-fe-05`) — `/app/scans/:scanId/items/:itemId`, `scan-item-detail.server.ts`, `scan-item-detail.server.test.ts`
+- ~~FE-06: Apply Label flow — one-click AI disclosure metafield, multi-regulation citation, audit entry (`labelled`), item status `labelled`, `refreshCompletedScanAggregates`~~ (`w35-fe-06`) — `apply-label.server.ts`, `apply-label.server.test.ts`; plan gate `fixDashboard`
 - FE-07: Mark as Human-Reviewed flow — reviewer name form, validation, audit entry, exemption (`w35-fe-07`)
 - FE-08: Request Rewrite flow (S10) — side-by-side diff, tone selector, apply/edit, audit entry (`w35-fe-08`)
 - FE-09: Free tier summary (S5) — locked preview, upgrade CTA (`w35-fe-09`)
