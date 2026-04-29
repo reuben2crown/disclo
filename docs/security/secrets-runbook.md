@@ -9,9 +9,9 @@
 
 ## Inventory (maintain with code changes)
 
-**Parity:** Every key in `disclo/infra/env.example` must appear below (or be explicitly marked deprecated). CI-only secrets are listed separately.
+**Parity:** Every key documented in `disclo/docs/ENVIRONMENT_VARIABLES.md` and validated in `packages/core/src/config.ts` where applicable must appear below (or be explicitly marked deprecated). CI-only secrets are listed separately.
 
-### `disclo/infra/env.example` (monorepo runtime)
+### `disclo/.env` (monorepo runtime; gitignored)
 
 | Variable | Purpose | Where stored | Rotation trigger |
 | --- | --- | --- | --- |
@@ -36,7 +36,7 @@
 | `R2_PUBLIC_URL` | Public asset base | Railway, local `.env` | CDN change |
 | `SHOPIFY_API_KEY` | OAuth (embedded app) | Partner dashboard, Railway, Shopify app `.env` | Partner rotation |
 | `SHOPIFY_API_SECRET` | OAuth + webhook HMAC | Partner dashboard, Railway, Shopify app `.env` | Partner rotation |
-| `SHOPIFY_SCOPES` | Install scopes | Partner / `shopify.app.toml` | Scope change |
+| `SCOPES` / `SHOPIFY_SCOPES` | Install scopes (see `shopify.server.ts`) | Partner / `shopify.app.toml` | Scope change |
 | `SHOPIFY_APP_URL` | OAuth callbacks | Railway, Shopify app `.env` | Domain change |
 | `SESSION_SECRET` | Remix / session signing | Railway, Shopify app `.env` | Leak or staff change |
 | `INTERNAL_API_SECRET` | App-to-API (if used) | Railway, local `.env` | Leak or staff change |
@@ -44,12 +44,14 @@
 | `SUPPORT_ALERT_WEBHOOK_URL` | Optional ops webhook | Railway, local `.env` | Endpoint change |
 | `SENTRY_DSN` | Error tracking | Railway, local `.env` | Project rotation |
 | `POSTHOG_API_KEY` | Product analytics | Railway, local `.env` | Project rotation |
+| `DEFAULT_LOCALE` | Embedded UI default locale | Railway, local `.env` | Product change |
+| `MERCHANT_SUPPORT_EMAIL` | Optional merchant-facing support line | Railway, local `.env` | Ops change |
 
 ### CI / GitHub Actions only
 
 | Variable | Purpose | Where stored | Notes |
 | --- | --- | --- | --- |
-| `SUPABASE_DATABASE_URL` | Postgres ping for keep-alive | GitHub Actions secrets | See `.github/workflows/supabase-keep-alive.yml`; not in `env.example` by design |
+| `SUPABASE_DATABASE_URL` | Postgres ping for keep-alive | GitHub Actions secrets | See `.github/workflows/supabase-keep-alive.yml`; CI-only, not in local `.env` |
 
 ## Rotation procedure (generic)
 

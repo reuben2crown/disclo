@@ -51,3 +51,15 @@ export class EvidenceError extends DiscloError {
     super(message, "EVIDENCE_ERROR", 409, options);
   }
 }
+
+export class APIProviderError extends DiscloError {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, "API_PROVIDER_ERROR", 502, options);
+  }
+}
+
+export class AIModelError extends DiscloError {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, "AI_MODEL_ERROR", 502, options);
+  }
+}

@@ -3,6 +3,9 @@ import { buildPlanFeatures, type PlanOverrideInput, type PlanRowSnapshot } from 
 
 export const DEFAULT_PLAN_FEATURES_TTL_SECONDS = 300;
 
+/** Redis key prefix for `getFeatures` cache entries (concatenate + shopId). */
+export const DEFAULT_PLAN_FEATURES_CACHE_KEY_PREFIX = "disclo:plan_features:";
+
 export interface PlanCache {
   get(key: string): Promise<string | null>;
   set(key: string, value: string, ttlSeconds: number): Promise<void>;
@@ -30,7 +33,8 @@ function defaultCacheKey(prefix: string, shopId: string): string {
  */
 export function createGetFeatures(options: CreateGetFeaturesOptions) {
   const ttlSeconds = options.ttlSeconds ?? DEFAULT_PLAN_FEATURES_TTL_SECONDS;
-  const cacheKeyPrefix = options.cacheKeyPrefix ?? "disclo:plan_features:";
+  const cacheKeyPrefix =
+    options.cacheKeyPrefix ?? DEFAULT_PLAN_FEATURES_CACHE_KEY_PREFIX;
 
   return async function getFeatures(
     shopId: string,

@@ -85,4 +85,5 @@ export const QUEUE_NAMES = {
   autoScan: "auto-scan",
   report: "report",
   evidenceVerify: "evidence-verify",
+  notificationDispatch: "notification-dispatch",
 } as const;

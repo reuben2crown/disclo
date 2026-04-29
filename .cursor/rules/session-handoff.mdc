@@ -13,4 +13,4 @@ alwaysApply: true
 
 - **`disclo/.env` is gitignored** — Git never stores it. Branch renames, orphan branches, and normal commits do not restore or delete it unless the **working tree** is wiped.
 - **Before** any operation that deletes or replaces the repo root (e.g. `Remove-Item` of everything except `.git`, `git clean -fdx`, mass `git rm`, re-clone): **stop and tell the user** to copy `disclo/.env` (and `apps/embedded/shopify/.env` if present) to a **path outside the repo** (e.g. `~/disclo-env-backup/` or password manager). Do not paste secret values into chat.
-- If the user reports a missing `.env`, suggest **Cursor / VS Code Local History**, **Windows File History / Previous Versions**, and provider dashboards (Supabase, Upstash, etc.) — do not fabricate secret values.
+- If the user reports a missing `.env`, suggest **Cursor / VS Code Local History**, **Windows File History / Previous Versions**, and provider dashboards (Supabase, Upstash, etc.) — do not fabricate secret values. Variable **names** live in `disclo/docs/ENVIRONMENT_VARIABLES.md` (no secrets in Git).

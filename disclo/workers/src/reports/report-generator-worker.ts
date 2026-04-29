@@ -1,13 +1,20 @@
 import prisma from "@disclo/db";
-import { Worker } from "bullmq";
+import { Queue, Worker } from "bullmq";
 import {
   QUEUE_NAMES,
-  defaultLocaleFromEnv,
   getBullmqQueueOptions,
-  getNotificationMessages,
+  notificationDispatchJobSchema,
   reportGeneratorJobSchema,
+  resolveNotificationPreferences,
+  shouldEnqueueScanCompleteNotification,
 } from "@disclo/core";
 import { requireRedisUrl } from "../lib/worker-connection.js";
+
+const redisUrl = requireRedisUrl();
+const notificationQueue = new Queue(
+  QUEUE_NAMES.notificationDispatch,
+  getBullmqQueueOptions(redisUrl),
+);
 
 export const reportGeneratorWorker = new Worker(
   QUEUE_NAMES.report,
@@ -30,30 +37,40 @@ export const reportGeneratorWorker = new Worker(
       return;
     }
 
-    const n = getNotificationMessages(defaultLocaleFromEnv());
-    const title =
-      data.kind === "scan_complete"
-        ? n.reportScanCompleteTitle
-        : n.reportMonthlyTitle;
-    const body =
-      data.kind === "scan_complete"
-        ? n.reportScanCompleteBody(shop.externalDomain)
-        : n.reportMonthlyBody(shop.externalDomain);
-
-    await prisma.notification.create({
-      data: {
-        userId: shop.ownerUserId,
-        shopId: data.shopId,
-        type: "report",
-        title,
-        body,
-        link: "/app",
-      },
+    const settings = await prisma.shopSettings.findUnique({
+      where: { shopId: data.shopId },
+      select: { notifyScanComplete: true, notifyHighRisk: true },
     });
+    const prefs = resolveNotificationPreferences(settings);
+    if (
+      data.kind === "scan_complete" &&
+      !shouldEnqueueScanCompleteNotification(prefs)
+    ) {
+      console.info(
+        `report-generator job ${job.id}: skipped scan-complete notification (shop prefs)`,
+      );
+      return;
+    }
 
-    console.info(`report-generator job ${job.id}: notification created for shop ${data.shopId}`);
+    const dispatch = notificationDispatchJobSchema.parse({
+      userId: shop.ownerUserId,
+      shopId: data.shopId,
+      shopDomain: shop.externalDomain,
+      kind:
+        data.kind === "scan_complete"
+          ? "report_scan_complete"
+          : "report_monthly_summary",
+      link: data.kind === "scan_complete" ? "/app/scans" : "/app/audit",
+    });
+    await notificationQueue.add("dispatch", dispatch, {
+      removeOnComplete: true,
+      removeOnFail: 50,
+    });
+    console.info(
+      `report-generator job ${job.id}: queued notification for shop ${data.shopId}`,
+    );
   },
-  getBullmqQueueOptions(requireRedisUrl()),
+  getBullmqQueueOptions(redisUrl),
 );
 
 void reportGeneratorWorker;

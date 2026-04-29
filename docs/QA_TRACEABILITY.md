@@ -33,6 +33,12 @@ These rows replace generic placeholders for the **three primary merchant journey
 | --- | --- | --- | --- | --- | --- |
 | After **Start scan**, detail route shows overall + pipeline progress, polls until complete; back to scans list | FE-03, INT-01, REU-101 | `scan-progress.server.test.ts`; `app/routes/app.scans.$scanId.tsx` | unit + manual | UI / AD | CI (server tests); manual dev store |
 
+### Screen audit (BE-11 / FE-13) — traceability
+
+| Requirement / AC (summary) | Linear issue(s) | Test IDs or file paths | Level | Owner | Last verified |
+| --- | --- | --- | --- | --- | --- |
+| Audit log list (plan `auditLog`), regulation filter, PDF export (`auditLogPdfExport`) with SHA-256 record digest in PDF | BE-11, FE-13, BE-10 | `packages/core/src/audit/pdf-export.test.ts`; `audit-log.server.test.ts`, `app/routes/app.audit._index.tsx`, `app/routes/app.audit.export.tsx` | unit + manual | UI / AUDIT | CI (server tests) |
+
 ## Phase 1 — other must-haves (fill in)
 
 
@@ -41,6 +47,9 @@ These rows replace generic placeholders for the **three primary merchant journey
 | Webhook HMAC rejects invalid        | SEC-03, AD-04           | `disclo/packages/core/src/webhooks/shopify-webhook-hmac.test.ts` | unit        | SEC / AD | CI |
 | Token encryption                    | SEC-04, INFRA-06        | `disclo/packages/core/src/utils/crypto.test.ts` | unit        | SEC | CI |
 | Plan enforcement on premium actions | BE-04, scan enqueue     | `disclo/apps/embedded/shopify/app/scan-enqueue.server.test.ts` (`requireFeature`, plan row null → 400) | integration | BE | CI |
+| Notifications matrix: scan complete in-app + email dispatch (respects `shop_settings.notify_scan_complete`) | NOTIF-01, NOTIF-02, NOTIF-03, BE-22 | `packages/core/src/notifications/notification-preferences.test.ts`, `workers/src/classify/text-classifier-worker.ts`, `workers/src/reports/report-generator-worker.ts`, `workers/src/notifications/notification-dispatcher-worker.ts`, `packages/core/src/notifications/templates/index.test.ts` | integration + unit | NOTIF | CI |
+| Notifications matrix: high-risk + support webhook (respects `shop_settings.notify_high_risk`) | NOTIF-04, BE-22 | `text-classifier-worker.ts` (high-risk job), `notification-dispatcher-worker.ts` (`SUPPORT_ALERT_WEBHOOK_URL`, `createHttpService`) | integration | NOTIF / SEC | CI + env check |
+| Notifications matrix: evidence expiry re-open + notify | BE-14, NOTIF-01, NOTIF-03 | `workers/src/evidence/evidence-verifier-worker.ts`, `workers/src/maintenance/register-evidence-verify-schedule.ts`, `packages/core/src/scan/payloads.test.ts` | integration + unit | EVID / NOTIF | CI |
 | GDPR / uninstall cascade            | COMP-02                 | *TBD*                  | integration |       |               |
 
 

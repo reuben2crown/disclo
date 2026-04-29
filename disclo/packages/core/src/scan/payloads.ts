@@ -68,3 +68,27 @@ export const reportGeneratorJobSchema = z.object({
 });
 
 export type ReportGeneratorJob = z.infer<typeof reportGeneratorJobSchema>;
+
+/** Queued on `notification-dispatch` — creates in-app row and optional email. */
+export const notificationDispatchJobSchema = z.object({
+  userId: z.string().uuid(),
+  shopId: z.string().uuid().optional(),
+  shopDomain: z.string().min(1).optional(),
+  kind: z.enum([
+    "report_monthly_summary",
+    "report_scan_complete",
+    "high_risk_alert",
+    "evidence_expiry",
+  ]),
+  link: z.string().min(1).optional(),
+});
+
+export type NotificationDispatchJob = z.infer<typeof notificationDispatchJobSchema>;
+
+/** Queued on `evidence-verify` — periodic checks against evidence registry/source. */
+export const evidenceVerifyJobSchema = z.object({
+  source: z.enum(["daily-tick"]).default("daily-tick"),
+  limit: z.number().int().positive().max(500).optional(),
+});
+
+export type EvidenceVerifyJob = z.infer<typeof evidenceVerifyJobSchema>;

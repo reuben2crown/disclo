@@ -35,6 +35,9 @@ export default function App() {
           {m.nav.dashboard}
         </Link>
         <Link to="/app/scans">{m.nav.scans}</Link>
+        <Link to="/app/audit">{m.nav.audit}</Link>
+        <Link to="/app/billing">{m.nav.billing}</Link>
+        <Link to="/app/evidence">Evidence library</Link>
         <Link to="/app/settings">{m.nav.settings}</Link>
       </NavMenu>
       <Outlet context={i18n} />

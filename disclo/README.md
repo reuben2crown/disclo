@@ -14,12 +14,8 @@ Work on **`dev`**. The **`main`** branch at the repo root is reserved for produc
 ## Setup
 
 ```bash
-# If you do not already have .env (gitignored), create it from the template:
-cp infra/env.example .env
-# Fill DATABASE_URL, REDIS_URL, ENCRYPTION_KEY (64 hex chars), API keys, Shopify vars, etc.
-
-# Shopify app (from repo root paths):
-# cp apps/embedded/shopify/.env.example apps/embedded/shopify/.env
+# Create disclo/.env (gitignored) from your team vault or password manager.
+# See docs/ENVIRONMENT_VARIABLES.md for every variable name and purpose.
 
 pnpm install
 pnpm --filter @disclo/db exec prisma migrate deploy
@@ -45,7 +41,8 @@ pnpm db:seed
 - `packages/db` — Prisma schema + migrations
 - `packages/adapters` — Platform adapters (Shopify stub)
 - `workers` — BullMQ workers (scan, classifiers, reports, evidence, auto-scan)
-- `infra` — `env.example`, Railway config
+- `docs` — `ENVIRONMENT_VARIABLES.md` (variable names; no secrets in git)
+- `infra` — Railway config
 
 ## Shopify
 

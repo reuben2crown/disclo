@@ -243,8 +243,62 @@ export const merchantMessagesEs: MerchantMessages = {
   nav: {
     dashboard: "Disclo cumplimiento IA",
     scans: "Análisis",
+    audit: "Audit log",
+    billing: "Plans & billing",
     settings: "Ajustes",
   },
+
+  billing: {
+    titleBar: "Plans & billing",
+    pageTitle: "Plans & billing",
+    intro:
+      "Pick a plan for your catalog size and compliance needs. Checkout runs in Shopify; approve the charge there, then return to Disclo.",
+    currentPlanHeading: "Current plan",
+    perMonth: "/ month",
+    maxItemsLabel: "Max products per scan",
+    unlimited: "Unlimited",
+    highlightsBasic:
+      "Label fixes, audit log, PDF export, monthly auto-scan, image detection",
+    highlightsPro: "Everything in Basic, plus rewrite engine and higher limits",
+    highlightsAgency: "Higher limits, white-label reports, API access",
+    highlightsEnterprise: "Custom limits, dedicated support",
+    subscribe: "Subscribe in Shopify",
+    switchPlan: "Switch plan",
+    currentBadge: "Current",
+    downgrade: "Cancel subscription",
+    downgradeHelp:
+      "Cancels through Shopify and moves this shop to the Free plan. You can subscribe again anytime.",
+    checkoutReturn:
+      "Thanks for completing checkout. If your plan still looks wrong after a minute, refresh this page.",
+    downgradeReturn: "You are on the Free plan now.",
+    errorGeneric: "Something went wrong. Reload and try again.",
+    enterpriseBlurb:
+      "Enterprise is normally custom-priced. Subscribing here uses a standard monthly charge so you can complete checkout in a dev store; contact us for production terms.",
+  },
+  auditLog: {
+    titleBar: "Audit log",
+    intro:
+      "Chronological record of reviewer actions (labels, human-reviewed, rewrites, and more). Filter by regulation that applies to the product at scan time. Export a PDF for your records when your plan includes PDF export.",
+    filterLabel: "Regulation on product",
+    allRegulations: "All regulations",
+    applyFilter: "Apply filter",
+    exportPdf: "Export PDF",
+    exportPdfHelp:
+      "Downloads a PDF with a SHA-256 digest of the included entries. Uses the same regulation filter as the list.",
+    emptyTitle: "No audit entries yet",
+    emptyDescription:
+      "Actions from scans (such as applying a disclosure label) appear here.",
+    emptyFilter:
+      "No entries match this regulation filter. Clear the filter or pick another code.",
+    upgradeTitle: "Audit log is not on your plan",
+    upgradeBody:
+      "Upgrade in Shopify admin to keep a full audit trail and export PDFs.",
+    tableWhen: "When",
+    tableAction: "Action",
+    tableProduct: "Product ID",
+    tableNotes: "Notes",
+  },
+
 
   footer: {
     language: "Idioma",

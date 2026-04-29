@@ -18,7 +18,7 @@ todos:
     content: "Sprint 0: Threat model ingress map audited vs current Shopify + webhook routes (/agent-sec-comp)"
     status: completed
   - id: s0-secrets-env-parity
-    content: "Sprint 0: Secrets runbook covers every disclo/infra/env.example entry (/agent-sec-comp)"
+    content: "Sprint 0: Secrets runbook covers every disclo/docs/ENVIRONMENT_VARIABLES.md entry (/agent-sec-comp)"
     status: completed
   - id: s0-qa-matrix-rows
     content: "Sprint 0: QA_TRACEABILITY.md non-placeholder rows for first three Phase 1 E2E paths (/agent-qa)"
@@ -121,7 +121,7 @@ todos:
     status: pending
   - id: w23-be-11
     content: "BE-11: Audit log PDF export — formatted PDF, SHA-256 integrity hash, export declaration, regulation citations per entry"
-    status: pending
+    status: completed
   - id: w23-be-12
     content: "BE-12: Rewrite engine — Claude integration, tone selection, spec preservation, change list, editorial note, audit log entry on apply"
     status: pending
@@ -136,7 +136,7 @@ todos:
     status: pending
   - id: w23-be-21
     content: "BE-21: Shopify Billing — appSubscriptionCreate, confirmation, APP_SUBSCRIPTIONS_UPDATE webhook, plan_id sync, all 4 tiers"
-    status: pending
+    status: completed
   - id: w23-be-22
     content: "BE-22: Email notifications — Resend integration: scan complete, high-risk alert, evidence expiry, monthly report"
     status: pending
@@ -160,16 +160,16 @@ todos:
     status: completed
   - id: w23-notif-01
     content: "NOTIF-01: Notification dispatcher worker — workers/notification-dispatcher.ts, consumes from notification-queue, resolves template, renders email via Resend, writes to notifications table"
-    status: pending
+    status: completed
   - id: w23-notif-02
     content: "NOTIF-02: In-app surfacing — lightweight polling/toast patterns in embedded app (no WebSocket needed at MVP)"
-    status: pending
+    status: completed
   - id: w23-notif-03
     content: "NOTIF-03: Email templates — TypeScript template literals in packages/core/src/notifications/templates/"
-    status: pending
+    status: completed
   - id: w23-notif-04
     content: "NOTIF-04: Support alert routing — POST to internal Slack webhook or Linear issue creation on high-risk scan (configurable via SUPPORT_ALERT_WEBHOOK_URL)"
-    status: pending
+    status: completed
   - id: w23-notif-matrix
     content: "Notifications: All scenarios from Section 7 table — full trigger/channel/plan-gate matrix (see execution plan sec 4.2 and Section 7)"
     status: pending
@@ -202,7 +202,7 @@ todos:
     status: pending
   - id: w35-fe-10
     content: "FE-10: Billing page (S6) — plan comparison, Shopify Billing, all 4 tiers"
-    status: pending
+    status: completed
   - id: w35-fe-11
     content: "FE-11: Green claims dashboard (S11) — claims grouped by type, status, regulation, evidence attachment, rewrite"
     status: pending
@@ -211,7 +211,7 @@ todos:
     status: pending
   - id: w35-fe-13
     content: "FE-13: Audit log viewer (S8) — chronological list, filters (including regulation), PDF export button"
-    status: pending
+    status: completed
   - id: w35-fe-14
     content: "FE-14: Settings page (S7) — target markets, badge text, green badge tooltip, scan preferences"
     status: pending
@@ -347,7 +347,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 | Sprint 0 todo / theme                                               | Primary agent                        | Validate / prove                                                                                 |
 | ------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------ |
 | Threat model + **ingress audit** (`s0-threat-ingress-audit`)        | `/agent-sec-comp`                    | Grep `app/routes`, `shopify.app.toml`, `apps/api` vs `docs/security/threat-model.md` ingress map |
-| **Secrets runbook** ↔ `infra/env.example` (`s0-secrets-env-parity`) | `/agent-sec-comp`                    | Table lists every `env.example` key + CI-only secrets (e.g. keep-alive)                          |
+| **Secrets runbook** ↔ `docs/ENVIRONMENT_VARIABLES.md` (`s0-secrets-env-parity`) | `/agent-sec-comp`                    | Table lists every documented env key + CI-only secrets (e.g. keep-alive)                          |
 | **QA traceability** first E2E rows (`s0-qa-matrix-rows`)            | `/agent-qa`                          | Rows have real requirement text, planned test paths, not `*TBD*` for those rows                  |
 | **CI on `dev` + PR to `main`** (`s0-ci-github-main`)                | `/agent-infra`                       | `gh run list --workflow=ci.yml --branch dev`; green on PRs to `main` from `dev`                  |
 | **Webhook contract tests** (`s0-webhook-contract-tests`)            | `/agent-backend` + `/agent-sec-comp` | Unit/integration tests for HMAC contract; optional Remix route tests later                       |
@@ -368,7 +368,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 | Criterion                                | Status                                                                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Threat model draft + ingress vs routes   | Done — ingress map lists concrete Remix webhook paths and `apps/api` stub                    |
-| Secrets runbook vs `infra/env.example`   | Done — inventory table covers every template key + `SUPABASE_DATABASE_URL` (keep-alive CI)   |
+| Secrets runbook vs `docs/ENVIRONMENT_VARIABLES.md`   | Done — inventory table covers documented keys + `SUPABASE_DATABASE_URL` (keep-alive CI)   |
 | QA traceability — first three E2E paths  | Done — three rows with planned test IDs/paths (evidence still `pending` until tests exist)   |
 | CI green locally (`pnpm` from `disclo/`) | Verified locally; **confirm on `main`** (`s0-ci-github-main`)                                |
 | Webhook HMAC contract tests              | Done — `packages/core/src/shopify-webhook-hmac.test.ts` (+ export); Remix route tests later  |
@@ -389,7 +389,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 - ~~Sprint 0 (sec 4.7): QA traceability matrix shell at docs/QA_TRACEABILITY.md~~ (`s0-artifact-qa-traceability`)
 - ~~Sprint 0 (sec 4.7): CI green — pnpm typecheck, lint, test from disclo/ (confirm GitHub Actions on main after push)~~ (`s0-local-ci-pnpm`)
 - ~~Sprint 0: Threat model ingress map audited vs current Shopify + webhook routes~~ (`s0-threat-ingress-audit` / `/agent-sec-comp`)
-- ~~Sprint 0: Secrets runbook covers every disclo/infra/env.example entry~~ (`s0-secrets-env-parity`)
+- ~~Sprint 0: Secrets runbook covers every documented env key (`disclo/docs/ENVIRONMENT_VARIABLES.md`)~~ (`s0-secrets-env-parity`)
 - ~~Sprint 0: QA_TRACEABILITY.md non-placeholder rows for first three Phase 1 E2E paths~~ (`s0-qa-matrix-rows` / `/agent-qa`)
 - Sprint 0: CI green on GitHub — `dev` push + PRs to `main` (`s0-ci-github-main` / `/agent-infra`)
 - ~~Sprint 0: Webhook test harness / contract tests (e.g. Linear REU-157)~~ (`s0-webhook-contract-tests`)
@@ -416,7 +416,7 @@ Each agent **checks for existing artifacts** before creating duplicates, **valid
 - ~~INFRA-07: BullMQ queue setup — connection, queue definitions (scan, text-classify, image-classify, claims-check, report, evidence-verify, auto-scan), worker base~~ (`w1-infra-07`) — `**pnpm smoke:bullmq` OK** (shared Redis; prefix `disclo`_)
 - ~~INFRA-08: GitHub Actions CI — lint, typecheck, test on PR~~ (`w1-infra-08`)
 - INFRA-09: Railway deployment config (`w1-infra-09`)
-- ~~INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI~~ (`w1-infra-10`) — **2026-04-01:** `schema.prisma` `directUrl` + `infra/env.example`; migrate/seed proven locally
+- ~~INFRA-10: Supabase project creation, DATABASE_URL wiring (pooler vs direct per Supabase + Prisma docs), Prisma migrate from local/CI~~ (`w1-infra-10`) — **2026-04-01:** `schema.prisma` `directUrl` + env var docs; migrate/seed proven locally
 - INFRA-11: GitHub Actions keep-alive workflow (supabase-keep-alive.yml) — twice-weekly SELECT 1, secrets wired, failure visibility, runbook to disable on Supabase Pro upgrade (`w1-infra-11`)
 
 ### Core (Linear epic BE / REU-29)
@@ -512,7 +512,7 @@ Execution plan sec 4.2. Epic IDs: BE REU-29, AD REU-30, BILL REU-32, NOTIF REU-3
 
 ### Audit / evidence / billing / storage (split epics)
 
-- BE-11: Audit log PDF export — formatted PDF, SHA-256 integrity hash, export declaration, regulation citations per entry (`w23-be-11`)
+- ~~BE-11: Audit log PDF export — formatted PDF, SHA-256 record digest, declaration, regulation names per entry~~ (`w23-be-11`) — `packages/core/src/audit/pdf-export.ts` (`pdf-lib`); download `app.audit.export.tsx`; plan gate `auditLogPdfExport`
 - BE-12: Rewrite engine — Claude integration, tone selection, spec preservation, change list, editorial note, audit log entry on apply (`w23-be-12`)
 - BE-13: Evidence system — CRUD for evidence_items, claim_evidence linking, evidence suggestion engine, R2 document upload, SHA-256 hash (`w23-be-13`)
 - BE-14: Evidence verifier worker — daily cron, certification registry lookup (API/URL), status update, re-open linked scan_items on expiry, notification (`w23-be-14`)
@@ -524,8 +524,8 @@ Execution plan sec 4.2. Epic IDs: BE REU-29, AD REU-30, BILL REU-32, NOTIF REU-3
 
 - NOTIF-01: Notification dispatcher worker — workers/notification-dispatcher.ts, consumes from notification-queue, resolves template, renders email via Resend, writes to notifications table (`w23-notif-01`)
 - NOTIF-02: In-app surfacing — lightweight polling/toast patterns in embedded app (no WebSocket needed at MVP) (`w23-notif-02`)
-- NOTIF-03: Email templates — TypeScript template literals in packages/core/src/notifications/templates/ (`w23-notif-03`)
-- NOTIF-04: Support alert routing — POST to internal Slack webhook or Linear issue creation on high-risk scan (configurable via SUPPORT_ALERT_WEBHOOK_URL) (`w23-notif-04`)
+- ~~NOTIF-03: Email templates — TypeScript template literals in packages/core/src/notifications/templates/~~ (`w23-notif-03`) — `templates/email-html.ts` + i18n-backed copy in dispatcher
+- ~~NOTIF-04: Support alert routing — POST to internal Slack webhook or Linear issue creation on high-risk scan (configurable via SUPPORT_ALERT_WEBHOOK_URL)~~ (`w23-notif-04`) — `SUPPORT_ALERT_WEBHOOK_URL` + `createHttpService` in `notification-dispatcher-worker.ts`
 - Notifications: All scenarios from Section 7 table — full trigger/channel/plan-gate matrix (see execution plan sec 4.2 and Section 7) (`w23-notif-matrix`)
 
 ### Embedded frontend (FE-04 through FE-14; FE-03 lives under Sprint 1B with INT-01)
@@ -541,7 +541,7 @@ Execution plan sec 4.2. Epic IDs: BE REU-29, AD REU-30, BILL REU-32, NOTIF REU-3
 - FE-10: Billing page (S6) — plan comparison, Shopify Billing, all 4 tiers (`w35-fe-10`)
 - FE-11: Green claims dashboard (S11) — claims grouped by type, status, regulation, evidence attachment, rewrite (`w35-fe-11`)
 - FE-12: Evidence library (S9) — list, add form (6 types), detail, suggestion engine, R2 upload (`w35-fe-12`)
-- FE-13: Audit log viewer (S8) — chronological list, filters (including regulation), PDF export button (`w35-fe-13`)
+- ~~FE-13: Audit log viewer (S8) — chronological list, regulation filter, PDF export button~~ (`w35-fe-13`) — `/app/audit`, `audit-log.server.ts`, `audit-pdf-download.server.ts`; list gated by `auditLog`
 - FE-14: Settings page (S7) — target markets, badge text, green badge tooltip, scan preferences (`w35-fe-14`)
 
 ---

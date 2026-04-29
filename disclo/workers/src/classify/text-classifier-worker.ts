@@ -4,7 +4,7 @@
  */
 import prisma from "@disclo/db";
 import { Prisma } from "@prisma/client";
-import { Worker } from "bullmq";
+import { Queue, Worker } from "bullmq";
 import {
   QUEUE_NAMES,
   classifyPlainText,
@@ -14,10 +14,20 @@ import {
   finalizeScanIfComplete,
   getBullmqQueueOptions,
   maxQualityTier,
+  resolveNotificationPreferences,
   scanItemClassifyJobSchema,
+  shouldEnqueueHighRiskNotification,
+  shouldEnqueueScanCompleteNotification,
   type QualityTier,
 } from "@disclo/core";
 import { requireRedisUrl } from "../lib/worker-connection.js";
+
+const redisUrl = requireRedisUrl();
+const reportQueue = new Queue(QUEUE_NAMES.report, getBullmqQueueOptions(redisUrl));
+const notificationQueue = new Queue(
+  QUEUE_NAMES.notificationDispatch,
+  getBullmqQueueOptions(redisUrl),
+);
 
 function requireEnv(name: string): string {
   const v = process.env[name];
@@ -117,8 +127,55 @@ export const textClassifierWorker = new Worker(
     });
 
     await finalizeScanIfComplete(prisma, p.scanId);
+    const scan = await prisma.scan.findUnique({
+      where: { id: p.scanId },
+      select: {
+        id: true,
+        status: true,
+        flaggedItems: true,
+        shop: { select: { id: true, ownerUserId: true, externalDomain: true } },
+      },
+    });
+    if (scan?.status === "completed") {
+      const settings = await prisma.shopSettings.findUnique({
+        where: { shopId: scan.shop.id },
+        select: { notifyScanComplete: true, notifyHighRisk: true },
+      });
+      const prefs = resolveNotificationPreferences(settings);
+      if (shouldEnqueueScanCompleteNotification(prefs)) {
+        await reportQueue.add(
+          "scan-complete",
+          { shopId: scan.shop.id, kind: "scan_complete", scanId: scan.id },
+          {
+            jobId: `scan-complete:${scan.id}`,
+            removeOnComplete: true,
+            removeOnFail: 50,
+          },
+        );
+      }
+      if (
+        (scan.flaggedItems ?? 0) > 0 &&
+        shouldEnqueueHighRiskNotification(prefs)
+      ) {
+        await notificationQueue.add(
+          "dispatch",
+          {
+            userId: scan.shop.ownerUserId,
+            shopId: scan.shop.id,
+            shopDomain: scan.shop.externalDomain,
+            kind: "high_risk_alert",
+            link: `/app/scans/${scan.id}`,
+          },
+          {
+            jobId: `high-risk-alert:${scan.id}`,
+            removeOnComplete: true,
+            removeOnFail: 50,
+          },
+        );
+      }
+    }
   },
-  getBullmqQueueOptions(requireRedisUrl()),
+  getBullmqQueueOptions(redisUrl),
 );
 
 void textClassifierWorker;

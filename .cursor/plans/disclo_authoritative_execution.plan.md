@@ -383,7 +383,7 @@ disclo/
 │   └── auto-scan.ts
 │
 ├── infra/
-│   ├── env.example
+│   ├── docs/ENVIRONMENT_VARIABLES.md
 │   └── railway.toml
 │
 ├── docs/
@@ -869,7 +869,7 @@ All notification scenarios from the table in Section 7 must be implemented. See 
 3. **Risk-first ordering:** webhook authenticity, encryption, tenant isolation, billing, GDPR delete/export, audit PDF integrity.
 4. **Sprint 0 (1 week):** SEC-COMP foundations (threat model draft, secrets inventory, webhook test harness), QA visibility (traceability matrix shell), CI green on `main`.
 5. **Running sprints:** Plan → implement with **tests first** → internal code review → QA verification → **Security + QA co-sign** on high-risk merges → short demo → retro → update `c:\Dev\disclo-apps\docs\SESSION.md`.
-6. **Definition of Ready:** issue template complete; mocks/fixtures for GPTZero, Hive, Anthropic, Dodo, Stripe-not-used documented; environments documented in `disclo/infra/env.example`.
+6. **Definition of Ready:** issue template complete; mocks/fixtures for GPTZero, Hive, Anthropic, Dodo, Stripe-not-used documented; environments documented in `disclo/docs/ENVIRONMENT_VARIABLES.md`.
 7. **Definition of Done:** all acceptance criteria satisfied; tests and lint/typecheck green; SESSION handoff updated; security checklist satisfied for sensitive areas.
 
 ### 4.8 UI consistency and Shopify UX standards
@@ -1365,7 +1365,7 @@ c:\Dev\disclo-apps\                         <-- workspace root (Cursor workspace
     plugins/
       wordpress/                            <-- Phase 2 PHP plugin scaffold
     infra/
-      env.example                           <-- updated with all new vars
+      ENVIRONMENT_VARIABLES.md              <-- updated with all new vars
       railway.toml
     package.json
     pnpm-workspace.yaml
@@ -1735,7 +1735,7 @@ Create a dedicated agent/workstream in Linear: **SEC-COMP: Security & Compliance
     - Define rotation runbook for `ENCRYPTION_KEY`, API keys, webhook secrets.
     - Add startup validation for required secrets.
   - Acceptance criteria:
-    - `infra/env.example` complete and accurate.
+    - `disclo/docs/ENVIRONMENT_VARIABLES.md` complete and accurate.
     - `docs/security/secrets-runbook.md` defines rotation windows and rollback.
   - Security requirements:
     - Secrets only in platform secret stores; never in repo.

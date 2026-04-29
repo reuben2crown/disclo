@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { AIGateway } from "../integrations/ai/ai-gateway.js";
 import { ClassifierError } from "../utils/errors.js";
-
-export const ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages";
-export const ANTHROPIC_SONNET_MODEL = "claude-sonnet-4-20250514";
+import { PromptManager } from "../integrations/ai/prompt-manager.server.js";
+import { AIProviderModel, AIProviderType, GEMINI_MODEL } from "../integrations/ai/ai-contract.js";
+import { resolveDefaultAIProviderModel } from "../integrations/ai/ai-factory.js";
 
 const substantiationResultSchema = z.object({
   results: z.array(
@@ -17,9 +18,7 @@ export interface SubstantiateGreenClaimsDeps {
   productDescription: string;
   flaggedPhrases: string[];
   planAllowsLlm: boolean;
-  apiKey: string;
-  model?: string;
-  fetchFn?: typeof fetch;
+  storeId: string;
 }
 
 export type ClaimSubstantiationStatus = "SUBSTANTIATED" | "BARE_ASSERTION";
@@ -30,71 +29,70 @@ export interface ClaimSubstantiationResult {
 }
 
 /**
- * Pass 2 — LLM substantiation (Pro+). Mocks in unit tests only.
+ * Pass 2 — LLM substantiation for green marketing claims (domain logic).
+ * Uses AIGateway via {@link AIGateway}; mocks `fetch` in tests only.
  */
 export async function substantiateGreenClaims(
   deps: SubstantiateGreenClaimsDeps,
 ): Promise<ClaimSubstantiationResult[]> {
+
   const base = deps.flaggedPhrases.map((phrase) => ({
     phrase,
     status: "BARE_ASSERTION" as const,
   }));
-
   if (!deps.planAllowsLlm || deps.flaggedPhrases.length === 0) {
+    //TODO: validate if its appropriate to return BARE_ASSERTION for this case when no actual check is performed. To avoid misinformation of fact.
     return base;
   }
 
-  const fetchImpl = deps.fetchFn ?? globalThis.fetch.bind(globalThis);
-  const model = deps.model ?? ANTHROPIC_SONNET_MODEL;
+  
+  // TODO: add this to the template_manager migration. 
+// const prompt = `You classify green marketing claims for a product.
+// Product description:
+// ---
+// ${deps.productDescription}
+// ---
+// Flagged phrases: ${JSON.stringify(deps.flaggedPhrases)}
+// For each phrase, respond with SUBSTANTIATED only if the description gives concrete, verifiable support (specific cert, measurable claim, named standard). Otherwise BARE_ASSERTION.
+// Return JSON only: {"results":[{"phrase":"...","status":"SUBSTANTIATED"|"BARE_ASSERTION"}]}`;
 
-  const prompt = `You classify green marketing claims for a product.
-Product description:
----
-${deps.productDescription}
----
-Flagged phrases: ${JSON.stringify(deps.flaggedPhrases)}
-For each phrase, respond with SUBSTANTIATED only if the description gives concrete, verifiable support (specific cert, measurable claim, named standard). Otherwise BARE_ASSERTION.
-Return JSON only: {"results":[{"phrase":"...","status":"SUBSTANTIATED"|"BARE_ASSERTION"}]}`;
+const template = await PromptManager.getTemplate('substantiate_green_claims');
 
-  const res = await fetchImpl(ANTHROPIC_MESSAGES_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": deps.apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
+const prompt = PromptManager.hydrate(template, {
+  product_description: deps.productDescription,
+  flagged_phrases: JSON.stringify(deps.flaggedPhrases),
+});
 
-  if (!res.ok) {
-    throw new ClassifierError(`anthropic: HTTP ${res.status}`);
+
+const providerModel: AIProviderModel = resolveDefaultAIProviderModel();
+
+// fallback providers (optional)
+const fallbackProviders: AIProviderModel[] = [
+  {
+    provider: AIProviderType.GOOGLE_AI_STUDIO,
+    model: GEMINI_MODEL.GEMINI_2_0_FLASH,
+  },
+];
+
+const aiResponse = await AIGateway.execute({
+  prompt,
+  options: {
+    provider: providerModel, // Primary
+    fallbackProviders: fallbackProviders,
+    jsonMode: true,
+    temperature: 0.8,
+    useCache: true,
+    cacheDuration: 1440, // Cache for 24 hours (in minutes)
+  },
+  metadata: {
+    storeId: deps.storeId,
+    featureName: 'substantiate_green_claims',
   }
+});
 
-  let body: unknown;
-  try {
-    body = await res.json();
-  } catch {
-    throw new ClassifierError("anthropic: invalid JSON");
-  }
+let cleanJson = aiResponse.text.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
 
-  const content = (body as { content?: Array<{ type?: string; text?: string }> })
-    ?.content?.[0]?.text;
-  if (!content || typeof content !== "string") {
-    throw new ClassifierError("anthropic: missing content text");
-  }
-
-  let parsedJson: unknown;
-  try {
-    parsedJson = JSON.parse(content);
-  } catch {
-    throw new ClassifierError("anthropic: content not JSON");
-  }
-
-  const parsed = substantiationResultSchema.safeParse(parsedJson);
+  const parsed = substantiationResultSchema.safeParse(cleanJson);
   if (!parsed.success) {
     throw new ClassifierError("anthropic: unexpected substantiation shape");
   }

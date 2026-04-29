@@ -9,7 +9,6 @@ build
 # Monorepo secrets (templates stay tracked)
 disclo/.env
 disclo/.env.*
-!disclo/infra/env.example
 disclo/apps/embedded/shopify/.env
 disclo/apps/embedded/shopify/.env.*
 

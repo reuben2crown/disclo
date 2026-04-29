@@ -28,6 +28,7 @@ import type { AppI18nOutletContext } from "../locales/i18n-outlet-context.js";
 import { localeFromRequest } from "../locales/i18n.server.js";
 import prisma from "../db.server";
 import { applyAiDisclosureLabel } from "../features/scans/apply-label.server.js";
+import { markScanItemHumanReviewed } from "../features/scans/mark-human-reviewed.server.js";
 import { loadScanItemDetail } from "../features/scans/scan-item-detail.server.js";
 import { authenticate } from "../shopify.server";
 
@@ -60,8 +61,10 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
   const labelled =
     new URL(request.url).searchParams.get("labelled") === "1";
+  const reviewed =
+    new URL(request.url).searchParams.get("reviewed") === "1";
 
-  return json({ detail, labelled });
+  return json({ detail, labelled, reviewed });
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -78,19 +81,31 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 
   const form = await request.formData();
-  if (form.get("intent") !== "applyLabel") {
+  const intent = String(form.get("intent") ?? "");
+  if (intent !== "applyLabel" && intent !== "humanReview") {
     return json({ ok: false as const, error: m.dashboard.unknownAction }, {
       status: 400,
     });
   }
 
-  const result = await applyAiDisclosureLabel(
-    prisma,
-    session.shop,
-    scanId,
-    itemId,
-    locale,
-  );
+  if (intent === "humanReview") {
+    const reviewerName = String(form.get("reviewerName") ?? "");
+    const notes = String(form.get("reviewNotes") ?? "");
+    const reviewed = await markScanItemHumanReviewed(prisma, {
+      shopDomain: session.shop,
+      scanId,
+      itemId,
+      reviewerName,
+      notes,
+    });
+    if (!reviewed.ok) {
+      return json({ ok: false as const, error: reviewed.error }, { status: reviewed.httpStatus });
+    }
+    const path = new URL(request.url).pathname;
+    return redirect(`${path}?reviewed=1`);
+  }
+
+  const result = await applyAiDisclosureLabel(prisma, session.shop, scanId, itemId, locale);
 
   if (!result.ok) {
     return json(
@@ -110,7 +125,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function ScanItemDetailPage() {
   const { m } = useOutletContext<AppI18nOutletContext>();
-  const { detail, labelled } = useLoaderData<typeof loader>();
+  const { detail, labelled, reviewed } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
 
   const hasAiRegulation = detail.item.regulations.some(
@@ -132,6 +147,9 @@ export default function ScanItemDetailPage() {
       <BlockStack gap="500">
         {labelled ? (
           <Banner tone="success" title={m.scanItemDetail.applyLabelSuccess} />
+        ) : null}
+        {reviewed ? (
+          <Banner tone="success" title="Item marked as human-reviewed." />
         ) : null}
 
         {actionData && "ok" in actionData && actionData.ok === false && (
@@ -286,6 +304,29 @@ export default function ScanItemDetailPage() {
                 <Button submit variant="primary">
                   {m.scanItemDetail.applyLabel}
                 </Button>
+              </Form>
+            </BlockStack>
+          </Card>
+        ) : null}
+        {detail.item.status !== "pending" && detail.item.status !== "exempted" ? (
+          <Card>
+            <BlockStack gap="300">
+              <Text as="p" variant="bodyMd">
+                Mark this item as reviewed by a person and exempt it from label-required status.
+              </Text>
+              <Form method="post">
+                <input type="hidden" name="intent" value="humanReview" />
+                <BlockStack gap="200">
+                  <label>
+                    Reviewer name
+                    <input name="reviewerName" required />
+                  </label>
+                  <label>
+                    Notes
+                    <textarea name="reviewNotes" rows={3} />
+                  </label>
+                  <Button submit>Mark as Human-Reviewed</Button>
+                </BlockStack>
               </Form>
             </BlockStack>
           </Card>

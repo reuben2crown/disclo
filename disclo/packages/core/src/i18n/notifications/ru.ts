@@ -7,4 +7,10 @@ export const notificationMessagesRu: NotificationMessages = {
   reportMonthlyTitle: "Готов ежемесячный отчёт о соответствии",
   reportMonthlyBody: (shopDomain: string) =>
     `Откройте Disclo из админки Shopify, чтобы прочитать месячную сводку для ${shopDomain}.`,
+  highRiskAlertTitle: "Требуется проверка позиций с высоким риском",
+  highRiskAlertBody: (shopDomain: string) =>
+    `Откройте Disclo из админки Shopify, чтобы проверить позиции с высоким риском для ${shopDomain}.`,
+  evidenceExpiryTitle: "Срок действия подтверждения скоро истечёт",
+  evidenceExpiryBody: (shopDomain: string) =>
+    `Откройте Disclo из админки Shopify, чтобы обновить подтверждения для отмеченных заявлений магазина ${shopDomain}.`,
 };

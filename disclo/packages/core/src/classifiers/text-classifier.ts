@@ -1,54 +1,16 @@
-import { z } from "zod";
 import type { QualityTier } from "../models/types.js";
 import { ClassifierError } from "../utils/errors.js";
-
-/** Minimum word count before calling GPTZero (execution plan + REQUIREMENTS). */
-export const GPTZERO_MIN_WORDS = 50;
-
-export const GPTZERO_DEFAULT_BASE_URL = "https://api.gptzero.me";
-
-const predictPath = "/v2/predict/text";
-
-const gptZeroDocumentSchema = z.object({
-  completely_generated_prob: z.number().optional(),
-  average_generated_prob: z.number().optional(),
-  sentences: z
-    .array(
-      z.object({
-        generated_prob: z.number(),
-        sentence: z.string(),
-      }),
-    )
-    .optional(),
-});
-
-const gptZeroPredictResponseSchema = z.object({
-  documents: z.array(gptZeroDocumentSchema).min(1),
-});
-
-export interface TextClassifierDeps {
-  text: string;
-  apiKey: string;
-  /** Default `https://api.gptzero.me`. */
-  baseUrl?: string;
-  fetchFn?: typeof fetch;
-}
+import { AiDetectorGateway } from "../integrations/ai-detector/ai-detector-gateway.js";
+import { AiTextDetectorResult } from "../integrations/ai-detector/ai-detector-contract.js";
 
 export interface TextClassificationResult {
+  ok: boolean;
   aiProbability: number | null;
   riskLevel: QualityTier;
   insufficientText: boolean;
-  sentenceBreakdown?: Array<{ generated_prob: number; sentence: string }>;
-  provider: "gptzero";
+  sentenceBreakdown?: Array<{ sentence: string, confidence: number }>;
+  provider: string;
   classifiedAt: Date;
-}
-
-export function countWords(text: string): number {
-  const t = text.trim();
-  if (!t) {
-    return 0;
-  }
-  return t.split(/\s+/).filter(Boolean).length;
 }
 
 /** REQUIREMENTS §7.1: none 0.00–0.49, review 0.50–0.74, high 0.75–1.00 */
@@ -62,137 +24,37 @@ export function mapAiProbabilityToRiskLevel(probability: number): QualityTier {
   return "none";
 }
 
-function resolveBaseUrl(baseUrl?: string): string {
-  const raw = (baseUrl ?? GPTZERO_DEFAULT_BASE_URL).replace(/\/$/, "");
-  return raw;
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-function extractProbability(doc: z.infer<typeof gptZeroDocumentSchema>): number {
-  if (doc.completely_generated_prob != null) {
-    return doc.completely_generated_prob;
-  }
-  if (doc.average_generated_prob != null) {
-    return doc.average_generated_prob;
-  }
-  return 0;
-}
-
-async function postPredictText(
-  url: string,
-  apiKey: string,
-  document: string,
-  fetchImpl: typeof fetch,
-): Promise<Response> {
-  return fetchImpl(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-    },
-    body: JSON.stringify({ document }),
-  });
-}
-
-async function parsePredictJson(res: Response): Promise<z.infer<typeof gptZeroPredictResponseSchema>> {
-  let body: unknown;
-  try {
-    body = await res.json();
-  } catch {
-    throw new ClassifierError("gptzero: invalid JSON response");
-  }
-  const parsed = gptZeroPredictResponseSchema.safeParse(body);
-  if (!parsed.success) {
-    throw new ClassifierError("gptzero: unexpected response shape");
-  }
-  return parsed.data;
+function extractProbability(data: AiTextDetectorResult): number {
+  const raw = data.ai_confidence ?? 0;
+  return Math.min(1, Math.max(0, raw));
 }
 
 /**
- * Classifies plain text via GPTZero `POST /v2/predict/text`.
- * Retries once after 5s on HTTP 429 (REQUIREMENTS §7.1).
+ * Classifies plain text
+ * @param storeId - merchant store id
+ * @param text - text to scan
+ * @param requestId - request id
+ * @returns result of the text classification
  */
-export async function classifyPlainText(
-  deps: TextClassifierDeps,
-): Promise<TextClassificationResult> {
-  const fetchImpl = deps.fetchFn ?? globalThis.fetch.bind(globalThis);
-  const base = resolveBaseUrl(deps.baseUrl);
-  const url = `${base}${predictPath}`;
-  const wordCount = countWords(deps.text);
 
-  if (wordCount < GPTZERO_MIN_WORDS) {
-    return {
-      aiProbability: null,
-      riskLevel: "review",
-      insufficientText: true,
-      provider: "gptzero",
-      classifiedAt: new Date(),
-    };
+// TODO: Add support for multiple texts `text: string | string[]` and large batches chunking. This can also happen at the provider level to keep the classifier simple.
+export async function classifyPlainText(storeId: string, requestId: string, text: string): Promise<TextClassificationResult> {
+  const scanResult = await AiDetectorGateway.executeTextDetector(storeId, requestId, text);
+
+  if (!scanResult.ok) {
+    throw new ClassifierError("empty scan result");
   }
 
-  const document = deps.text.trim();
-  let res = await postPredictText(url, deps.apiKey, document, fetchImpl);
-
-  if (res.status === 429) {
-    await delay(5000);
-    res = await postPredictText(url, deps.apiKey, document, fetchImpl);
-  }
-
-  if (!res.ok) {
-    throw new ClassifierError(
-      `gptzero: HTTP ${res.status}`,
-    );
-  }
-
-  const data = await parsePredictJson(res);
-  const doc = data.documents[0];
-  if (!doc) {
-    throw new ClassifierError("gptzero: empty documents");
-  }
-
-  const aiProbability = extractProbability(doc);
+  const aiProbability = extractProbability(scanResult);
   const riskLevel = mapAiProbabilityToRiskLevel(aiProbability);
 
   return {
+    ok: scanResult.ok,
     aiProbability,
     riskLevel,
-    insufficientText: false,
-    sentenceBreakdown: doc.sentences,
-    provider: "gptzero",
-    classifiedAt: new Date(),
+    insufficientText: !!scanResult.insufficientText,
+    sentenceBreakdown: scanResult.sentenceBreakdown ?? [],
+    provider: scanResult.provider,
+    classifiedAt: scanResult.scanAt ?? new Date(),
   };
-}
-
-export interface TextBatchDeps {
-  texts: string[];
-  apiKey: string;
-  baseUrl?: string;
-  fetchFn?: typeof fetch;
-}
-
-/**
- * Runs multiple plain-text classifications in order (one GPTZero call per non-trivial text).
- * For large batches, prefer chunking at the caller to respect rate limits; `/v2/predict/files` can be added later.
- */
-export async function classifyPlainTextBatch(
-  deps: TextBatchDeps,
-): Promise<TextClassificationResult[]> {
-  const out: TextClassificationResult[] = [];
-  for (const text of deps.texts) {
-    out.push(
-      await classifyPlainText({
-        text,
-        apiKey: deps.apiKey,
-        baseUrl: deps.baseUrl,
-        fetchFn: deps.fetchFn,
-      }),
-    );
-  }
-  return out;
 }

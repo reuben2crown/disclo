@@ -227,9 +227,31 @@ async function seedCertificationRegistries() {
   }
 }
 
+async function seedPromptTemplates() {
+  await prisma.promptTemplate.upsert({
+    where: { name: "substantiate_green_claims" },
+    create: {
+      name: "substantiate_green_claims",
+      content: `You classify green marketing claims for a product.
+Product description:
+---
+{{product_description}}
+---
+Flagged phrases: {{flagged_phrases}}
+For each phrase, respond with SUBSTANTIATED only if the description gives concrete, verifiable support (specific cert, measurable claim, named standard). Otherwise BARE_ASSERTION.
+Return JSON only: {"results":[{"phrase":"...","status":"SUBSTANTIATED"|"BARE_ASSERTION"}]}`,
+      isActive: true,
+    },
+    update: {
+      isActive: true,
+    },
+  });
+}
+
 async function main() {
   await seedPlans();
   await seedCertificationRegistries();
+  await seedPromptTemplates();
 }
 
 main()

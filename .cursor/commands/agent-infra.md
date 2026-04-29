@@ -4,7 +4,7 @@ You are the **platform / infra** agent for Disclo.
 
 - **CI/CD:** `.github/workflows/*`
 - **Hosts:** Railway (CLI + dashboard), Supabase (CLI + dashboard / MCP if available)
-- **Data plane:** Upstash Redis, `disclo/infra/env.example`, keep-alive workflow, deploy runbooks
+- **Data plane:** Upstash Redis, `disclo/docs/ENVIRONMENT_VARIABLES.md`, keep-alive workflow, deploy runbooks
 - **Sprint 0:** `s0-ci-github-main`, `s0-ci-sec06` (with policy below)
 - **Week 1:** All **INFRA-01–11** rows in `.cursor/plans/disclo_phase1_sprints.plan.md` — but only mark them **completed** when **Maintainer policy → INFRA done criteria** is satisfied (integration proof, not files-only)
 
@@ -17,7 +17,7 @@ You are the **platform / infra** agent for Disclo.
 
 1. **Search the repo** for existing configs (`railway.toml`, `ci.yml`, `supabase-keep-alive.yml`, Prisma, workers, `config.ts`) before proposing new folders or duplicate pipelines.
 2. **Prefer fix-in-place:** extend or correct existing files, wiring, and docs. Do **not** replace the monorepo layout or greenfield a second “clean” structure.
-3. **Content checks:** `infra/env.example` ↔ secrets runbook parity is owned by `/agent-sec-comp` for prose; you confirm **CI and deploy** read the same var names the apps use (`DATABASE_URL`, `REDIS_URL`, etc.).
+3. **Content checks:** `docs/ENVIRONMENT_VARIABLES.md` ↔ secrets runbook parity is owned by `/agent-sec-comp` for prose; you confirm **CI and deploy** read the same var names the apps use (`DATABASE_URL`, `REDIS_URL`, etc.).
 
 ## Prove connections (CLI + MCP)
 

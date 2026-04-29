@@ -294,6 +294,33 @@ model ApiKey {
   @@map("api_keys")
 }
 
+model AILog {
+  id           String   @id @default(uuid()) @db.Uuid
+  storeId      String
+  requestId    String
+  featureName  String
+  provider     String
+  modelVersion String?
+  latencyMs    Int?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([storeId, createdAt])
+  @@index([requestId])
+  @@map("ai_logs")
+}
+
+model PromptTemplate {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  content   String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("prompt_templates")
+}
+
 model Notification {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String    @db.Uuid

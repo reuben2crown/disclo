@@ -7,4 +7,10 @@ export const notificationMessagesNl: NotificationMessages = {
   reportMonthlyTitle: "Uw maandelijkse compliance-samenvatting is klaar",
   reportMonthlyBody: (shopDomain: string) =>
     `Open Disclo vanuit Shopify-admin om de maandsamenvatting voor ${shopDomain} te lezen.`,
+  highRiskAlertTitle: "Items met hoog risico moeten worden beoordeeld",
+  highRiskAlertBody: (shopDomain: string) =>
+    `Open Disclo vanuit Shopify-admin om items met hoog risico voor ${shopDomain} te bekijken.`,
+  evidenceExpiryTitle: "Bewijs verloopt bijna",
+  evidenceExpiryBody: (shopDomain: string) =>
+    `Open Disclo vanuit Shopify-admin om bewijs te vernieuwen dat gekoppeld is aan gemarkeerde claims voor ${shopDomain}.`,
 };

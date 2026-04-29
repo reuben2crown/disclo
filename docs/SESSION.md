@@ -1,6 +1,6 @@
 # Disclo - Session Handoff
 
-Last updated: 2026-04-29. **Integration reliability pass:** fixed provider-layer request/response contracts in core integrations (Anthropic, Groq, OpenRouter, GPTZero, Hive, AI or Not), including URL/payload/response mapping, status handling, and latency math; added provider contract tests under `packages/core/src/integrations/ai/providers/providers-contract.test.ts` and `packages/core/src/integrations/ai-detector/providers/providers-contract.test.ts` (targeted run passes).
+Last updated: 2026-04-29. **Integration wiring pass:** split provider tests into per-provider files; implemented `apiLogger` usage in AI gateway; added Prisma schema + migration for `ai_logs` and `prompt_templates`; seeded default `substantiate_green_claims` template; removed hardcoded AI default selection by routing through factory resolver; fixed classifier gateway argument order bugs; fixed evidence upload form to pass content length and use consistent `evidence/` object keys.
 Active phase: Phase 1; Sprint 2 in progress (`w23-notif-matrix` still open for remaining Section 7 rows; BE-14 registry depth, FE-11, FE-14, rewrite).
 
 ## Security docs (quick links)

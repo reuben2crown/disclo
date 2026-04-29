@@ -90,6 +90,16 @@ export default function Dashboard() {
     actionLabel?: string;
   }>();
   const marketsFetcher = useFetcher<{ ok?: boolean; error?: string }>();
+  const notifFetcher = useFetcher<{
+    unreadCount: number;
+    latest: {
+      id: string;
+      title: string;
+      body: string | null;
+      link: string | null;
+      createdAt: string;
+    } | null;
+  }>();
   const [marketsSelected, setMarketsSelected] = useState<string[]>(
     () => snapshot?.targetMarkets ?? ["EU"],
   );
@@ -111,6 +121,14 @@ export default function Dashboard() {
       revalidator.revalidate();
     }
   }, [marketsFetcher.data, revalidator]);
+
+  useEffect(() => {
+    notifFetcher.load("/app/notifications");
+    const t = setInterval(() => {
+      notifFetcher.load("/app/notifications");
+    }, 15000);
+    return () => clearInterval(t);
+  }, [notifFetcher]);
 
   const complianceLabel =
     snapshot?.displayRiskScore != null
@@ -199,6 +217,17 @@ export default function Dashboard() {
             title={m.dashboard.marketsFailedTitle}
           >
             <p>{marketsFetcher.data.error}</p>
+          </Banner>
+        )}
+
+        {notifFetcher.data?.latest && (
+          <Banner tone="info" title={notifFetcher.data.latest.title}>
+            <BlockStack gap="200">
+              {notifFetcher.data.latest.body ? <p>{notifFetcher.data.latest.body}</p> : null}
+              {notifFetcher.data.latest.link ? (
+                <Link to={notifFetcher.data.latest.link}>Open</Link>
+              ) : null}
+            </BlockStack>
           </Banner>
         )}
 

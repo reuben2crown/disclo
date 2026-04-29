@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  evidenceVerifyJobSchema,
+  notificationDispatchJobSchema,
   reportGeneratorJobSchema,
   scanOrchestratorJobSchema,
   scanRequestSchema,
@@ -35,6 +37,29 @@ describe("reportGeneratorJobSchema", () => {
       shopId: "550e8400-e29b-41d4-a716-446655440000",
     });
     expect(j.kind).toBe("monthly_summary");
+  });
+});
+
+describe("notificationDispatchJobSchema", () => {
+  it("parses valid dispatch job", () => {
+    const j = notificationDispatchJobSchema.parse({
+      userId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+      shopId: "550e8400-e29b-41d4-a716-446655440000",
+      shopDomain: "example.myshopify.com",
+      kind: "report_scan_complete",
+      link: "/app/scans",
+    });
+    expect(j.kind).toBe("report_scan_complete");
+  });
+});
+
+describe("evidenceVerifyJobSchema", () => {
+  it("parses daily tick jobs", () => {
+    const j = evidenceVerifyJobSchema.parse({
+      source: "daily-tick",
+      limit: 100,
+    });
+    expect(j).toEqual({ source: "daily-tick", limit: 100 });
   });
 });
 

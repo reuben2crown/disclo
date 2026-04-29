@@ -272,7 +272,7 @@ disclo/                               ← monorepo root
 │   └── wordpress/                    ← PHP plugin (bridges WP/WC to SaaS)
 │
 ├── infra/
-│   └── env.example
+│   └── (env: see `disclo/docs/ENVIRONMENT_VARIABLES.md`; `disclo/.env` gitignored)
 ├── CLAUDE.md                         ← Agent memory file (auto-read by Cursor)
 ├── REQUIREMENTS.md                   ← This file
 ├── turbo.json

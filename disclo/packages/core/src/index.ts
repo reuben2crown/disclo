@@ -27,4 +27,28 @@ export * from "./scan/auto-scan-eligibility.js";
 export * from "./audit/actions.js";
 export * from "./audit/append.js";
 export * from "./audit/exemption.js";
+export * from "./audit/pdf-export.js";
+export * from "./evidence/evidence-object-key.js";
+export * from "./notifications/templates/index.js";
+export * from "./notifications/notification-preferences.js";
 export * from "./plan/green-claims-llm.js";
+export * from "./utils/http-service.js";
+export * from "./integrations/ai/ai-contract.js";
+export * from "./integrations/ai/ai-gateway.js";
+export * from "./integrations/ai/prompt-manager.server.js";
+export * from "./integrations/ai/providers/anthropic-ai.js";
+export * from "./integrations/ai/providers/groq-ai.js";
+export * from "./integrations/ai/providers/openrouter.js";
+export * from "./integrations/ai-detector/ai-detector-contract.js";
+export * from "./integrations/ai-detector/ai-detector-factory.js";
+export * from "./integrations/ai-detector/ai-detector-gateway.js";
+export * from "./integrations/billing/billing-types.js";
+export * from "./integrations/billing/finalize-subscription-change.server.js";
+export * from "./integrations/storage/storage-contract.js";
+export * from "./integrations/storage/storage-registry.js";
+export * from "./integrations/api-logger.js";
+export {
+  createCloudflareR2Provider,
+  createDefaultCloudflareR2Provider,
+} from "./integrations/storage/providers/cloudflare-r2.server.js";
+

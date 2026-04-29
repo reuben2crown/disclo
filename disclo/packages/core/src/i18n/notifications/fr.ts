@@ -7,4 +7,10 @@ export const notificationMessagesFr: NotificationMessages = {
   reportMonthlyTitle: "Votre résumé mensuel de conformité est prêt",
   reportMonthlyBody: (shopDomain: string) =>
     `Ouvrez Disclo depuis l’admin Shopify pour lire le résumé mensuel de ${shopDomain}.`,
+  highRiskAlertTitle: "Des articles à haut risque nécessitent une relecture",
+  highRiskAlertBody: (shopDomain: string) =>
+    `Ouvrez Disclo depuis l’admin Shopify pour examiner les articles à haut risque de ${shopDomain}.`,
+  evidenceExpiryTitle: "La preuve est proche de l’expiration",
+  evidenceExpiryBody: (shopDomain: string) =>
+    `Ouvrez Disclo depuis l’admin Shopify pour renouveler les preuves liées aux allégations signalées de ${shopDomain}.`,
 };

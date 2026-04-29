@@ -19,8 +19,8 @@ Disclo is a compliance SaaS for AI-content disclosures and green-claims substant
 - `disclo/packages/db` Prisma schema and migrations
 - `disclo/workers` BullMQ workers
 - `docs/SESSION.md` Session handoff file (must update each meaningful session)
-- `disclo/.env` Local secrets (gitignored); copy from `disclo/infra/env.example` on a new machine
-- `disclo/apps/embedded/shopify/.env` Shopify app env (gitignored); copy from `.env.example` there
+- `disclo/.env` Local secrets (gitignored); obtain from team vault — variable list in `disclo/docs/ENVIRONMENT_VARIABLES.md`
+- `disclo/apps/embedded/shopify/.env` Optional second env file if you run the Shopify app from that directory only (many workflows use the monorepo `disclo/.env` only)
 
 ## Non-Negotiable Architecture Rules
 1. `packages/core` must never import from `packages/adapters`.
